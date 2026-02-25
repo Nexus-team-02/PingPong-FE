@@ -9,8 +9,11 @@ export type ApiPage = {
   title: string
   date?: DateRange
   status: string
+  isNew?: boolean
 }
 
 export type Page = ApiPage & {
   originalDate?: DateRange
+  originalTitle?: string
+  originalStatus?: string
 }

@@ -1,19 +1,23 @@
+import React, { useRef, useEffect } from 'react'
 import { addDays, BASE_DATE, formatDate, TASK_COL_WIDTH } from '@/utils/date'
 import { Page } from '@/types/gantt'
 import PlannedBar from './PlannedBar'
 import ActualBar from './ActualBar'
 
-export default function TaskRow({
-  page,
-  isEditing,
-  onChange,
-  DAY_WIDTH,
-}: {
+interface TaskRowProps {
   page: Page
   isEditing: boolean
   onChange: (page: Page) => void
   DAY_WIDTH: number
-}) {
+}
+
+function TaskRow({ page, isEditing, onChange, DAY_WIDTH }: TaskRowProps) {
+  const pageRef = useRef(page)
+
+  useEffect(() => {
+    pageRef.current = page
+  }, [page])
+
   const handleTrackMouseDown = (e: React.MouseEvent) => {
     if (!isEditing || page.date) return
 
@@ -27,7 +31,7 @@ export default function TaskRow({
     let currentStartStr = formatDate(startDate)
     let currentEndStr = formatDate(startDate)
 
-    onChange({ ...page, date: { start: currentStartStr, end: currentEndStr } })
+    onChange({ ...pageRef.current, date: { start: currentStartStr, end: currentEndStr } })
 
     const onMove = (moveEvent: MouseEvent) => {
       const currentX = moveEvent.clientX - trackRect.left
@@ -37,10 +41,15 @@ export default function TaskRow({
       const minDate = startDate < currentDate ? startDate : currentDate
       const maxDate = startDate > currentDate ? startDate : currentDate
 
-      currentStartStr = formatDate(minDate)
-      currentEndStr = formatDate(maxDate)
+      const newStartStr = formatDate(minDate)
+      const newEndStr = formatDate(maxDate)
 
-      onChange({ ...page, date: { start: currentStartStr, end: currentEndStr } })
+      if (currentStartStr !== newStartStr || currentEndStr !== newEndStr) {
+        currentStartStr = newStartStr
+        currentEndStr = newEndStr
+
+        onChange({ ...pageRef.current, date: { start: currentStartStr, end: currentEndStr } })
+      }
     }
 
     const onUp = () => {
@@ -55,7 +64,7 @@ export default function TaskRow({
   return (
     <div className='flex items-center h-16 relative hover:bg-gray-50/50 transition-colors'>
       <div
-        className='text-base font-medium shrink-0 sticky left-0 bg-white z-50 flex flex-col pl-8 pr-8 justify-center border-r border-gray-100 h-full'
+        className='text-base font-medium shrink-0 sticky left-0 bg-white z-50 flex flex-col pl-6 pr-6 justify-center border-r border-gray-100 h-full'
         style={{ width: TASK_COL_WIDTH }}
       >
         {isEditing ? (
@@ -77,11 +86,22 @@ export default function TaskRow({
         }`}
         onMouseDown={handleTrackMouseDown}
       >
-        {page.originalDate && <ActualBar date={page.originalDate} DAY_WIDTH={DAY_WIDTH} />}
-        {page.date && (
+        {page.status === '완료' && page.date && (
+          <ActualBar date={page.date} DAY_WIDTH={DAY_WIDTH} />
+        )}
+
+        {page.status !== '완료' && page.date && (
           <PlannedBar page={page} isEditing={isEditing} onChange={onChange} DAY_WIDTH={DAY_WIDTH} />
         )}
       </div>
     </div>
   )
 }
+
+export default React.memo(TaskRow, (prevProps, nextProps) => {
+  return (
+    prevProps.isEditing === nextProps.isEditing &&
+    prevProps.DAY_WIDTH === nextProps.DAY_WIDTH &&
+    prevProps.page === nextProps.page
+  )
+})
