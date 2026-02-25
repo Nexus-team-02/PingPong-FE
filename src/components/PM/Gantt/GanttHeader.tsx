@@ -21,7 +21,7 @@ export default function GanttHeader({
 
         <button
           onClick={onToggleEdit}
-          className={`px-6 py-2 rounded-full font-bold shadow-sm text-sm transition-colors border ${
+          className={`cursor-pointer px-6 py-2 rounded-full font-bold shadow-sm text-sm transition-colors border ${
             isEditing
               ? 'bg-pink-500 text-white border-pink-500 hover:bg-pink-600'
               : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
