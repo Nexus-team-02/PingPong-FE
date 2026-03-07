@@ -76,14 +76,14 @@ export const router = createBrowserRouter([
           {
             path: 'backend',
             children: [
-              { path: 'docs', element: <BackendApiDocsPage /> },
+              { path: '', element: <BackendApiDocsPage /> },
               { path: 'integration', element: <BackendApiIntegrationPage /> },
             ],
           },
           {
             path: 'frontend',
             children: [
-              { path: 'docs', element: <FrontendApiDocsPage /> },
+              { path: '', element: <FrontendApiDocsPage /> },
               { path: 'integration', element: <FrontendApiIntegrationPage /> },
             ],
           },

@@ -1,8 +1,9 @@
 import ApiAccordionItem from '@/components/api/ApiAccordionItem'
 import useApi from '@/hook/useApi'
 import { getAllEndpoints } from '@/api/swagger'
+import { getFlow } from '@/api/flow'
 import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import Title from '@/components/common/Title'
 import Lock from '@/assets/lock.svg?react'
 import AuthorizeModal from '@/components/api/AuthorizeModal'
@@ -13,11 +14,17 @@ export default function BackendApiDocsPage() {
   const [viewMode, setViewMode] = useState<'LIST' | 'FLOW'>('LIST')
 
   const { execute, loading, data } = useApi(getAllEndpoints)
+  const { execute: fetchFlows, data: flowData, loading: flowLoading } = useApi(getFlow)
+
   const { teamId } = useParams()
+  const { pathname } = useLocation()
+  const role = pathname.split('/')[3]
 
   useEffect(() => {
-    if (teamId) execute(Number(teamId))
-  }, [teamId, execute])
+    if (!teamId) return
+    execute(Number(teamId))
+    fetchFlows(Number(teamId), role.toUpperCase())
+  }, [teamId, execute, role, fetchFlows])
 
   const { created, modified, deleted } = useMemo(() => {
     const result = {
@@ -129,10 +136,16 @@ export default function BackendApiDocsPage() {
         )}
 
         {viewMode === 'FLOW' && (
-          <div className='flex gap-8 flex-wrap mt-6'>
-            <Folder folderName='LOGIN' />
-            <Folder folderName='MAIN' />
-            <Folder folderName='MYPAGE' />
+          <div className='flex flex-wrap gap-6 mt-6 ml-3'>
+            {flowLoading && <div>Loading flows...</div>}
+            {flowData?.map((flow) => (
+              <Folder
+                key={flow.flowId}
+                imageUrl={flow.thumbnailUrl}
+                folderName={flow.title}
+                onClick={() => console.log('flow click', flow.flowId)}
+              />
+            ))}
           </div>
         )}
       </div>

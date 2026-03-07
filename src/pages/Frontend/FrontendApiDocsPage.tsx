@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import ApiAccordionItem from '@/components/api/ApiAccordionItem'
 import useApi from '@/hook/useApi'
 import { getAllEndpoints } from '@/api/swagger'
@@ -7,16 +7,27 @@ import Title from '@/components/common/Title'
 import AuthorizeModal from '@/components/api/AuthorizeModal'
 import CreateFlowModal from '@/components/api/CreateFlowModal'
 import PlusIcon from '@/assets/plus.svg?react'
+import Folder from '@/components/common/Folder'
+import { getFlow } from '@/api/flow'
 
 export default function FrontendApiDocsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFlowModalOpen, setIsFlowModalOpen] = useState(false)
+
   const { execute, loading, data } = useApi(getAllEndpoints)
+  const { execute: fetchFlows, data: flowData, loading: flowLoading } = useApi(getFlow)
+
   const { teamId } = useParams()
 
+  const { pathname } = useLocation()
+  const role = pathname.split('/')[3]
+
   useEffect(() => {
-    if (teamId) execute(Number(teamId))
-  }, [teamId, execute])
+    if (!teamId) return
+
+    execute(Number(teamId))
+    fetchFlows(Number(teamId), role.toUpperCase())
+  }, [teamId, execute, fetchFlows, role])
 
   const { created, modified, deleted } = useMemo(() => {
     const result = {
@@ -86,6 +97,18 @@ export default function FrontendApiDocsPage() {
         >
           Flow
         </Title>
+        {flowLoading && <div>Loading flows...</div>}
+
+        <div className='flex flex-wrap gap-6 mt-6 ml-3'>
+          {flowData?.map((flow) => (
+            <Folder
+              key={flow.flowId}
+              imageUrl={flow.thumbnailUrl}
+              folderName={flow.title}
+              onClick={() => console.log('flow click', flow.flowId)}
+            />
+          ))}
+        </div>
         {isModalOpen && (
           <AuthorizeModal
             onClose={() => setIsModalOpen(false)}

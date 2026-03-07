@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import Modal from '../common/Modal'
 import useApi from '@/hook/useApi'
-import { createFlow } from '@/api/flow'
+import { createFlow, uploadImageToS3 } from '@/api/flow'
 import Button from '../common/Button'
 import Folder from '../common/Folder'
 
@@ -14,7 +14,8 @@ interface CreateFlowModalProps {
 export default function CreateFlowModal({ isOpen, onClose }: CreateFlowModalProps) {
   const [folderName, setFolderName] = useState('')
   const [description, setDescription] = useState('')
-  const [images, setImages] = useState<{ url: string; type: string }[]>([])
+  const [uploading, setUploading] = useState(false)
+  const [images, setImages] = useState<{ file: File; url: string; type: string }[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { teamId } = useParams()
 
@@ -34,9 +35,11 @@ export default function CreateFlowModal({ isOpen, onClose }: CreateFlowModalProp
     const files = e.target.files
     if (files) {
       const newImages = Array.from(files).map((file) => ({
+        file,
         url: URL.createObjectURL(file),
         type: file.type.split('/')[1].toUpperCase(),
       }))
+
       setImages((prev) => [...prev, ...newImages].slice(0, 3))
     }
   }
@@ -63,7 +66,7 @@ export default function CreateFlowModal({ isOpen, onClose }: CreateFlowModalProp
     try {
       const imageTypes = images.map((img) => img.type)
 
-      await createFlowExecute(
+      const result = await createFlowExecute(
         {
           title: folderName,
           description: description,
@@ -72,10 +75,20 @@ export default function CreateFlowModal({ isOpen, onClose }: CreateFlowModalProp
         Number(teamId),
       )
 
+      setUploading(true)
+
+      const uploadPromises = result.images.map((imageInfo, index) =>
+        uploadImageToS3(imageInfo.presignedUrl, images[index].file),
+      )
+
+      await Promise.all(uploadPromises)
+      setUploading(false)
       onClose()
     } catch (error) {
       console.error(error)
-      alert('A folder name is required.')
+      alert('Flow creation failed.')
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -135,8 +148,8 @@ export default function CreateFlowModal({ isOpen, onClose }: CreateFlowModalProp
           />
 
           <div className='flex justify-center mt-4'>
-            <Button onClick={handleCreate} disabled={loading}>
-              {loading ? 'CREATING...' : 'CREATE'}
+            <Button onClick={handleCreate} disabled={loading || uploading}>
+              {loading || uploading ? 'CREATING...' : 'CREATE'}
             </Button>
           </div>
         </div>

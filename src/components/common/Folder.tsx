@@ -36,7 +36,12 @@ export default function Folder({ imageUrl, folderName, onChangeFolderName, onCli
             placeholder='FOLDER NAME'
             value={folderName}
             onChange={onChangeFolderName}
-            className='w-full bg-transparent text-gray-900 font-bold tracking-wide text-sm uppercase outline-none placeholder-gray-400 focus:border-b-2 focus:border-blue-400 focus:pb-0.5 transition-all px-2 py-1'
+            readOnly={!onChangeFolderName}
+            className={`w-full bg-transparent text-gray-900 font-bold tracking-wide text-sm uppercase outline-none placeholder-gray-400 transition-all px-2 py-1 ${
+              !onChangeFolderName
+                ? 'cursor-default'
+                : 'focus:border-b-2 focus:border-blue-400 focus:pb-0.5'
+            }`}
           />
         </div>
       </div>
