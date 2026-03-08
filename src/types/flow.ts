@@ -3,3 +3,8 @@ export interface CreateFlowRequest {
   description: string
   imageTypes: string[]
 }
+
+export interface CompleteS3Request {
+  imageId: number
+  expectedObjectKey: string
+}

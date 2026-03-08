@@ -1,18 +1,19 @@
 import { useState } from 'react'
 import Modal from '../common/Modal'
 import Lock from '@/assets/lock.svg?react'
+import { useApiAuthStore } from '../../stores/apiAuthStore'
 
 interface AuthorizeModalProps {
   onClose: () => void
-  onSubmit: (token: string) => void
 }
 
-export default function AuthorizeModal({ onClose, onSubmit }: AuthorizeModalProps) {
-  const [token, setToken] = useState('')
+export default function AuthorizeModal({ onClose }: AuthorizeModalProps) {
+  const [token, setTokenInput] = useState('')
+  const setToken = useApiAuthStore((s) => s.setToken)
 
   const handleSubmit = () => {
     if (!token.trim()) return
-    onSubmit(token)
+    setToken(token)
     onClose()
   }
 
@@ -29,7 +30,7 @@ export default function AuthorizeModal({ onClose, onSubmit }: AuthorizeModalProp
               type='text'
               placeholder='input'
               value={token}
-              onChange={(e) => setToken(e.target.value)}
+              onChange={(e) => setTokenInput(e.target.value)}
               className='w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-api-green'
             />
           </div>

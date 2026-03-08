@@ -84,7 +84,7 @@ export const router = createBrowserRouter([
             path: 'frontend',
             children: [
               { path: '', element: <FrontendApiDocsPage /> },
-              { path: 'integration', element: <FrontendApiIntegrationPage /> },
+              { path: 'integration/:flowId', element: <FrontendApiIntegrationPage /> },
             ],
           },
           { path: 'qa', element: <QaPage /> },

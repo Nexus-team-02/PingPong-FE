@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react'
 import { useParams } from 'react-router-dom'
+import { createFlow, uploadImageToS3, completeS3 } from '@/api/flow'
 import Modal from '../common/Modal'
 import useApi from '@/hook/useApi'
-import { createFlow, uploadImageToS3 } from '@/api/flow'
 import Button from '../common/Button'
 import Folder from '../common/Folder'
 
@@ -15,10 +15,14 @@ export default function CreateFlowModal({ isOpen, onClose }: CreateFlowModalProp
   const [folderName, setFolderName] = useState('')
   const [description, setDescription] = useState('')
   const [uploading, setUploading] = useState(false)
+
   const [images, setImages] = useState<{ file: File; url: string; type: string }[]>([])
+
   const fileInputRef = useRef<HTMLInputElement>(null)
+
   const { teamId } = useParams()
 
+  const { execute: completeS3Execute } = useApi(completeS3)
   const { execute: createFlowExecute, loading } = useApi(createFlow)
 
   if (!isOpen) return null
@@ -63,6 +67,7 @@ export default function CreateFlowModal({ isOpen, onClose }: CreateFlowModalProp
       alert('Invalid teamId.')
       return
     }
+
     try {
       const imageTypes = images.map((img) => img.type)
 
@@ -82,7 +87,14 @@ export default function CreateFlowModal({ isOpen, onClose }: CreateFlowModalProp
       )
 
       await Promise.all(uploadPromises)
-      setUploading(false)
+
+      const completeBody = result.images.map((imageInfo) => ({
+        imageId: imageInfo.imageId,
+        expectedObjectKey: imageInfo.objectKey,
+      }))
+
+      await completeS3Execute(completeBody)
+
       onClose()
     } catch (error) {
       console.error(error)
