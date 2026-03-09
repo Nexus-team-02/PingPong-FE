@@ -3,7 +3,7 @@ import useApi from '@/hook/useApi'
 import { SyncSwagger } from '@/api/swagger'
 import { getFlow } from '@/api/flow'
 import { useEffect, useMemo, useState, useCallback } from 'react'
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams, useLocation, useNavigate } from 'react-router-dom'
 import Title from '@/components/common/Title'
 import Lock from '@/assets/lock.svg?react'
 import AuthorizeModal from '@/components/api/AuthorizeModal'
@@ -16,6 +16,7 @@ export default function BackendApiDocsPage() {
   const { execute, loading, data } = useApi(SyncSwagger)
   const { execute: fetchFlows, data: flowData, loading: flowLoading } = useApi(getFlow)
 
+  const navigate = useNavigate()
   const { teamId } = useParams()
   const { pathname } = useLocation()
   const role = pathname.split('/')[3]
@@ -221,7 +222,14 @@ export default function BackendApiDocsPage() {
                 key={flow.flowId}
                 imageUrl={flow.thumbnailUrl}
                 folderName={flow.title}
-                onClick={() => console.log('flow click', flow.flowId)}
+                onClick={() => {
+                  navigate(`integration/${flow.flowId}`, {
+                    state: {
+                      title: flow.title,
+                      subtitle: flow.description || `${flow.title} API 연동 상세 페이지입니다.`,
+                    },
+                  })
+                }}
               />
             ))}
           </div>
