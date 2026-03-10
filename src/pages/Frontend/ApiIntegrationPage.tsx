@@ -6,7 +6,7 @@ import LeftIcon from '@/assets/left.svg?react'
 import RightIcon from '@/assets/right.svg?react'
 import EditIcon from '@/assets/edit.svg?react'
 import CommentCanvas from '@/components/Flow/CommentCanvas'
-import ApiAccordionItem from '@/components/api/ApiAccordionItem'
+import LinkedApiAccordionItem from '@/components/api/LinkedApiAccordionItem'
 import ApiLinkModal from '@/components/Flow/ApiLinkModal'
 
 interface TeamLayoutContext {
@@ -57,7 +57,7 @@ export default function ApiIntegrationPage() {
       {role === 'FRONTEND' && (
         <EditIcon
           onClick={() => setEditMode((prev) => !prev)}
-          className={`w-6 h-6 mt-30 ml-170 transition cursor-pointer ${
+          className={`w-6 h-6 ml-170 transition cursor-pointer ${
             editMode ? 'text-red-500 hover:text-red-600' : 'text-gray-700 hover:text-blue-700'
           }`}
         />
@@ -94,12 +94,13 @@ export default function ApiIntegrationPage() {
               <h2 className='text-xl font-bold mb-4'>{group.tag}</h2>
               <div className='flex flex-col gap-4'>
                 {group.endpoints.map((ep) => (
-                  <ApiAccordionItem
-                    key={ep.endpointId}
+                  <LinkedApiAccordionItem
                     method={ep.method}
                     path={ep.path}
                     summary={ep.summary}
                     endpointId={ep.endpointId}
+                    flowImageId={currentImage?.imageId}
+                    isLinked={ep.isLinked}
                   />
                 ))}
               </div>
