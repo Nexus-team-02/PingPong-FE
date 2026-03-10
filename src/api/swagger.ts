@@ -50,3 +50,15 @@ export async function getDetailsEndpoint(endpointId: number) {
     throw handleApiError(error)
   }
 }
+
+export async function completeEndpoint(endpointId: number, flowImageId: number) {
+  try {
+    const res = await client.patch(`/api/v1/flow-images/${flowImageId}/endpoints/
+      ${endpointId}/complete`)
+
+    console.log(res)
+    return res.data.result
+  } catch (error) {
+    throw handleApiError(error)
+  }
+}
