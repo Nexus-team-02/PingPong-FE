@@ -1,15 +1,26 @@
 import { getDayOffset, getToday } from '@/utils/date'
 import { DateRange } from '@/types/gantt'
 
-export default function ActualBar({ date, DAY_WIDTH }: { date: DateRange; DAY_WIDTH: number }) {
+const DONE_STATUSES = ['완료', '완료됨', 'Done', 'Completed']
+
+interface ActualBarProps {
+  date: DateRange
+  DAY_WIDTH: number
+  status?: string
+}
+
+export default function ActualBar({ date, DAY_WIDTH, status }: ActualBarProps) {
   const today = getToday()
+  const isDone = status ? DONE_STATUSES.includes(status) : false
 
   const startOffset = getDayOffset(date.start)
-  const endOffset = getDayOffset(
-    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(
-      today.getDate(),
-    ).padStart(2, '0')}`,
-  )
+  const endOffset = isDone
+    ? getDayOffset(date.end) + 1 // +1 로 마지막 날 포함
+    : getDayOffset(
+        `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(
+          today.getDate(),
+        ).padStart(2, '0')}`,
+      )
 
   const duration = endOffset - startOffset
   if (duration <= 0) return null
