@@ -1,5 +1,7 @@
 #!/bin/sh
-cd ../
-mkdir output
-cp -R ./Nexus-FE/* ./output
-cp -R ./output ./PingPong-FE/
+
+npm install
+npm run build
+
+mkdir -p output
+cp -R dist/* ./output
