@@ -32,7 +32,7 @@ export default function NotionSection({
   const [selectingDbId, setSelectingDbId] = useState<string | null>(null)
 
   const handleConnect = () => {
-    const redirectUri = encodeURIComponent('https://pingpong-team.vercel.app/notion/callback')
+    const redirectUri = encodeURIComponent('https://nexus-team02.vercel.app/notion/callback')
 
     const state = encodeURIComponent(JSON.stringify({ teamId }))
 

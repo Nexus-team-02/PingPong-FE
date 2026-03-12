@@ -36,8 +36,8 @@ export default function TeamLayout() {
   const bgClass = ROLE_BG[role] ?? 'bg-back'
   const puzzle = ROLE_PUZZLE[role]
 
-  const defaultTitle = 'Express Service with PingPong'
-  const defaultSubtitle = `Start "PINGPONG" as a ${role ?? ''} developer`
+  const defaultTitle = 'Express Service with NEXUS'
+  const defaultSubtitle = `Start "NEXUS" as a ${role ?? ''} developer`
 
   const displayTitle = dynamicTitle ?? defaultTitle
   const displaySubtitle = dynamicSubtitle ?? defaultSubtitle

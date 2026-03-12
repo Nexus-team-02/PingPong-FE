@@ -5,6 +5,7 @@ import { CreateTeamRequest, InviteTeamRequest } from '@/types/team'
 export async function getTeams() {
   try {
     const res = await client.get('/api/teams/my')
+    console.log(res)
     return res.data.result
   } catch (error) {
     throw handleApiError(error)
