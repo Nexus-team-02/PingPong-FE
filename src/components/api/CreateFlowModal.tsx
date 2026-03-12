@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { createFlow, uploadImageToS3, completeS3 } from '@/api/flow'
+import { toast } from 'sonner'
 import Modal from '../common/Modal'
 import useApi from '@/hook/useApi'
 import Button from '../common/Button'
@@ -54,17 +55,17 @@ export default function CreateFlowModal({ isOpen, onClose }: CreateFlowModalProp
 
   const handleCreate = async () => {
     if (!folderName.trim()) {
-      alert('Please enter a folder name.')
+      toast.error('Please enter a folder name.')
       return
     }
 
     if (!description.trim()) {
-      alert('Please enter a description.')
+      toast.error('Please enter a description.')
       return
     }
 
     if (!teamId || isNaN(Number(teamId))) {
-      alert('Invalid teamId.')
+      toast.error('Invalid teamId.')
       return
     }
 
@@ -98,7 +99,7 @@ export default function CreateFlowModal({ isOpen, onClose }: CreateFlowModalProp
       onClose()
     } catch (error) {
       console.error(error)
-      alert('Flow creation failed.')
+      toast.error('Flow creation failed.')
     } finally {
       setUploading(false)
     }

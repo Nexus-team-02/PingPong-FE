@@ -5,6 +5,8 @@ import { linkEndpointsToRequest } from '@/api/flow'
 import { getAllEndpoints } from '@/api/swagger'
 import { LinkedEndpoint } from '@/types/flow'
 import Modal from '@/components/common/Modal'
+import Spinner from '../common/Spinner'
+import { toast } from 'sonner'
 
 interface ApiLinkModalProps {
   isOpen: boolean
@@ -60,12 +62,11 @@ export default function ApiLinkModal({ isOpen, onClose, requestId, onSuccess }: 
     if (!requestId || selectedIds.length === 0) return
     try {
       await linkEndpoints(requestId, { endpointIds: selectedIds })
-      alert('API가 성공적으로 연동되었습니다.')
+      toast.success('API connected successfully.')
       onSuccess()
       handleCloseModal()
-    } catch (error) {
-      console.error('API 연동 실패:', error)
-      alert('연동에 실패했습니다.')
+    } catch {
+      // handleApiError에서 이미 toast.error() 처리됨
     }
   }
 
@@ -99,7 +100,7 @@ export default function ApiLinkModal({ isOpen, onClose, requestId, onSuccess }: 
 
         <div className='flex-1 overflow-y-auto border border-gray-200 rounded-lg p-2 min-h-62.5 custom-scrollbar'>
           {isFetching ? (
-            <div className='text-center py-10 text-gray-500'>API 목록을 불러오는 중...</div>
+            <Spinner />
           ) : filteredEndpoints.length > 0 ? (
             <ul className='flex flex-col gap-2'>
               {filteredEndpoints.map((ep) => (

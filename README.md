@@ -1,2 +1,3 @@
-# PingPong-FE
+# NEXUS-FE
+
 [졸업프로젝트 2팀] API 명세서 협업 사이트의 FE 레포지토리 입니다.

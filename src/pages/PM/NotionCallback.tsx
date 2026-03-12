@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import useApi from '@/hook/useApi'
 import { exchangeNotionToken } from '@/api/notion'
+import Spinner from '@/components/common/Spinner'
 
 export default function NotionCallback() {
   const { execute } = useApi(exchangeNotionToken)
@@ -28,5 +29,5 @@ export default function NotionCallback() {
     run()
   }, [code, state, execute, navigate])
 
-  return <div>Notion 연결 중...</div>
+  return <Spinner />
 }

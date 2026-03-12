@@ -43,3 +43,11 @@ export interface OpenApiSchema {
   minLength?: number
   required?: string[]
 }
+
+export interface ExecutionResult {
+  status?: number
+  data?: unknown
+  error?: boolean
+  message?: string
+  details?: unknown
+}

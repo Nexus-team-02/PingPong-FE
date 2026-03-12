@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import Modal from '../common/Modal'
 import useApi from '@/hook/useApi'
+import Spinner from '../common/Spinner'
 import { getPageDetail } from '@/api/notion'
 
 interface NotionPage {
@@ -78,9 +79,7 @@ export default function ApiStatusModal({ isOpen, onClose, pageId }: ApiStatusMod
 
         <div className='min-h-80'>
           {isLoading ? (
-            <div className='flex h-full items-center justify-center py-20 text-sm text-gray-500'>
-              Loading Status...
-            </div>
+            <Spinner />
           ) : (
             <ul className='flex flex-col'>
               {apiList.map((api) => {

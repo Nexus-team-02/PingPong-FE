@@ -9,6 +9,7 @@ import TeamTitle from '@/components/Team/TeamTitle'
 import CreatorSection from '@/components/Team/CreatorSection'
 import LinkSection from '@/components/Team/LinkSection'
 import Button from '@/components/common/Button'
+import { toast } from 'sonner'
 
 export default function TeamCreatePage() {
   const navigate = useNavigate()
@@ -21,13 +22,10 @@ export default function TeamCreatePage() {
     creatorRole: 'PM',
   })
 
-  const { execute, loading, error } = useApi(createTeam)
+  const { execute, loading } = useApi(createTeam)
 
   const handleChange = (key: keyof CreateTeamForm, value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      [key]: value,
-    }))
+    setForm((prev) => ({ ...prev, [key]: value }))
   }
 
   const handleSubmit = async () => {
@@ -36,9 +34,10 @@ export default function TeamCreatePage() {
         ...form,
         creatorRole: ROLE_CONFIG[form.creatorRole].api,
       })
+      toast.success('Team created successfully.')
       navigate('/mypage')
-    } catch (err) {
-      console.error(err)
+    } catch {
+      // handleApiError에서 이미 toast.error() 처리됨
     }
   }
 
@@ -55,7 +54,6 @@ export default function TeamCreatePage() {
           value={form.creatorRole}
           onChange={(value: Role) => handleChange('creatorRole', value)}
         />
-
         <LinkSection
           figma={form.figma}
           discord={form.discord}
@@ -64,8 +62,6 @@ export default function TeamCreatePage() {
           onChange={handleChange}
         />
       </div>
-
-      {error && <p className='text-red-500 mt-4 text-center'>팀 생성 중 오류가 발생했습니다.</p>}
 
       <div className='mt-20 flex justify-center gap-4'>
         <Button variant='outline' onClick={handleCancel} disabled={loading}>

@@ -13,9 +13,9 @@ export default function HomePage() {
         </h1>
 
         <div className='grid grid-cols-1 gap-[8vw] md:grid-cols-3'>
-          <RoleCard title='BACKEND' description={`Start 'PINGPONG'\nas a back-end developer`} />
-          <RoleCard title='FRONTEND' description={`Start 'PINGPONG'\nas a front-end developer`} />
-          <RoleCard title='PM/QA' description={`Start 'PINGPONG'\nas a designer developer`} />
+          <RoleCard title='BACKEND' description={`Start 'NEXUS'\nas a back-end developer`} />
+          <RoleCard title='FRONTEND' description={`Start 'NEXUS'\nas a front-end developer`} />
+          <RoleCard title='PM/QA' description={`Start 'NEXUS'\nas a designer developer`} />
         </div>
       </section>
     </main>

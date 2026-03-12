@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Open from '@/assets/up.svg?react'
+import Spinner from '../common/Spinner'
 import { getDetailsEndpoint, executeEndpoint } from '@/api/swagger'
 import useApi from '@/hook/useApi'
 import { useApiAuthStore } from '@/stores/apiAuthStore'
-import { HttpMethod } from '@/types/api'
+import { HttpMethod, ExecutionResult } from '@/types/api'
 import { METHOD_STYLE } from '@/constants/method'
 
 import ApiParameters from './ApiParameters'
@@ -32,7 +33,7 @@ export default function ApiAccordionItem({ method, path, summary, endpointId }: 
   const [paramsInput, setParamsInput] = useState<Record<string, string>>({})
   const [bodyInput, setBodyInput] = useState('')
 
-  const [executionResult, setExecutionResult] = useState<unknown>(null)
+  const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null)
 
   const handleTryItOutChange = (val: boolean) => {
     setIsTryItOut(val)
@@ -96,9 +97,10 @@ export default function ApiAccordionItem({ method, path, summary, endpointId }: 
       setExecutionResult(result)
     } catch (e) {
       console.error(e)
+      const message = e instanceof Error ? e.message : '요청 중 오류가 발생했습니다.'
       setExecutionResult({
         error: true,
-        message: e.message || '요청 중 오류가 발생했습니다.',
+        message,
         details: e,
       })
     }
@@ -128,11 +130,7 @@ export default function ApiAccordionItem({ method, path, summary, endpointId }: 
         <div
           className={`space-y-4 border-t px-4 py-6 ${METHOD_STYLE[method].border} ${METHOD_STYLE[method].bg}`}
         >
-          {loading && (
-            <div className='animate-pulse p-4 text-sm font-medium text-gray-500'>
-              Loading parameters and responses...
-            </div>
-          )}
+          {loading && <Spinner />}
 
           {data && (
             <>

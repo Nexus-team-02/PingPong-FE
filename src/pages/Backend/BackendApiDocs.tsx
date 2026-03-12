@@ -1,6 +1,6 @@
 import ApiAccordionItem from '@/components/api/ApiAccordionItem'
 import useApi from '@/hook/useApi'
-import { SyncSwagger } from '@/api/swagger'
+import { SyncSwagger, getLatestSwagger } from '@/api/swagger'
 import { getFlow } from '@/api/flow'
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
@@ -8,12 +8,14 @@ import Title from '@/components/common/Title'
 import Lock from '@/assets/lock.svg?react'
 import AuthorizeModal from '@/components/api/AuthorizeModal'
 import Folder from '@/components/common/Folder'
+import Spinner from '@/components/common/Spinner'
 
 export default function BackendApiDocsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [viewMode, setViewMode] = useState<'LIST' | 'FLOW'>('LIST')
 
-  const { execute, loading, data } = useApi(SyncSwagger)
+  const { execute: fetchLatestSwagger, loading, data } = useApi(getLatestSwagger)
+  const { execute: syncSwagger, loading: syncLoading } = useApi(SyncSwagger)
   const { execute: fetchFlows, data: flowData, loading: flowLoading } = useApi(getFlow)
 
   const navigate = useNavigate()
@@ -21,15 +23,20 @@ export default function BackendApiDocsPage() {
   const { pathname } = useLocation()
   const role = pathname.split('/')[3]
 
+  const handleInitialLoad = useCallback(() => {
+    if (!teamId) return
+    fetchLatestSwagger(Number(teamId))
+    fetchFlows(Number(teamId), role.toUpperCase())
+  }, [teamId, fetchLatestSwagger, fetchFlows, role])
+
   const handleSync = useCallback(() => {
     if (!teamId) return
-    execute(Number(teamId))
-    fetchFlows(Number(teamId), role.toUpperCase())
-  }, [teamId, execute, fetchFlows, role])
+    syncSwagger(Number(teamId))
+  }, [teamId, syncSwagger])
 
   useEffect(() => {
-    handleSync()
-  }, [handleSync])
+    handleInitialLoad()
+  }, [handleInitialLoad])
 
   const endpoints = useMemo(() => {
     return (
@@ -47,11 +54,9 @@ export default function BackendApiDocsPage() {
     return endpoints.reduce(
       (acc, endpoint) => {
         if (endpoint.status !== 'CHANGED') return acc
-
         if (endpoint.changeType === 'CREATED') acc.created.push(endpoint)
         if (endpoint.changeType === 'MODIFIED') acc.modified.push(endpoint)
         if (endpoint.changeType === 'DELETED') acc.deleted.push(endpoint)
-
         return acc
       },
       {
@@ -63,18 +68,17 @@ export default function BackendApiDocsPage() {
   }, [endpoints])
 
   const hasChanges = created.length > 0 || modified.length > 0 || deleted.length > 0
-
-  const isSyncing = loading || flowLoading
+  const isSyncing = loading || syncLoading || flowLoading
 
   return (
     <div className='min-h-screen p-20 z-20'>
       <div className='w-full rounded-xl bg-white mx-auto p-8 mt-35'>
         {hasChanges && (
-          <div className='mb-12 p-6 rounded-lg bg-gray-50 border border-gray-200'>
-            <h1 className='font-extrabold text-lg pb-6 flex items-center gap-2 text-blue-600'>
+          <div className='mb-12 p-6 rounded-lg bg-gray-50/30 border border-gray-200'>
+            <h1 className='font-extrabold text-lg pb-6 flex items-center gap-2 text-api-green'>
               <span className='relative flex h-3 w-3'>
-                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75'></span>
-                <span className='relative inline-flex rounded-full h-3 w-3 bg-blue-500'></span>
+                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-api-green opacity-75'></span>
+                <span className='relative inline-flex rounded-full h-3 w-3 bg-api-green'></span>
               </span>
               NEW CHANGES
             </h1>
@@ -82,7 +86,7 @@ export default function BackendApiDocsPage() {
             {created.length > 0 && (
               <div className='mb-8'>
                 <Title>
-                  <span className='text-api-green'>ADD</span>
+                  <span>ADD</span>
                 </Title>
                 <div className='flex flex-col gap-4 mt-4'>
                   {created.map((endpoint) => (
@@ -101,7 +105,7 @@ export default function BackendApiDocsPage() {
             {modified.length > 0 && (
               <div className='mb-8'>
                 <Title>
-                  <span className='text-api-yellow'>UPDATE</span>
+                  <span>UPDATE</span>
                 </Title>
                 <div className='flex flex-col gap-4 mt-4'>
                   {modified.map((endpoint) => (
@@ -120,7 +124,7 @@ export default function BackendApiDocsPage() {
             {deleted.length > 0 && (
               <div className='mb-4'>
                 <Title>
-                  <span className='text-api-red'>DELETE</span>
+                  <span>DELETE</span>
                 </Title>
                 <div className='flex flex-col gap-4 mt-4'>
                   {deleted.map((endpoint) => (
@@ -140,7 +144,6 @@ export default function BackendApiDocsPage() {
 
         <div className='flex items-center justify-between mb-8'>
           <h2 className='text-xl font-bold'>{viewMode === 'LIST' ? 'ALL' : 'FLOW'}</h2>
-
           <div className='flex items-center gap-3'>
             <button
               onClick={handleSync}
@@ -214,26 +217,28 @@ export default function BackendApiDocsPage() {
             </div>
           ))}
 
-        {viewMode === 'FLOW' && (
-          <div className='flex flex-wrap gap-6 mt-6 ml-3'>
-            {flowLoading && <div className='text-gray-500'>Loading flows...</div>}
-            {flowData?.map((flow) => (
-              <Folder
-                key={flow.flowId}
-                imageUrl={flow.thumbnailUrl}
-                folderName={flow.title}
-                onClick={() => {
-                  navigate(`integration/${flow.flowId}`, {
-                    state: {
-                      title: flow.title,
-                      subtitle: flow.description || `${flow.title} API 연동 상세 페이지입니다.`,
-                    },
-                  })
-                }}
-              />
-            ))}
-          </div>
-        )}
+        {viewMode === 'FLOW' &&
+          (flowLoading ? (
+            <Spinner />
+          ) : (
+            <div className='flex flex-wrap gap-6 mt-6 ml-3'>
+              {flowData?.map((flow) => (
+                <Folder
+                  key={flow.flowId}
+                  imageUrl={flow.thumbnailUrl}
+                  folderName={flow.title}
+                  onClick={() => {
+                    navigate(`integration/${flow.flowId}`, {
+                      state: {
+                        title: flow.title,
+                        subtitle: flow.description || `${flow.title} API 연동 상세 페이지입니다.`,
+                      },
+                    })
+                  }}
+                />
+              ))}
+            </div>
+          ))}
       </div>
 
       {isModalOpen && <AuthorizeModal onClose={() => setIsModalOpen(false)} />}

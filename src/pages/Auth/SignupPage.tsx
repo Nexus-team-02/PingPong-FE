@@ -9,6 +9,7 @@ import AuthInput from '@/components/Auth/AuthInput'
 import AuthTitle from '@/components/Auth/AuthTitle'
 import AuthForm from '@/components/Auth/AuthForm'
 import AuthFooterLink from '@/components/Auth/AuthFooterLink'
+import { toast } from 'sonner'
 
 export default function SignupPage() {
   const navigate = useNavigate()
@@ -20,7 +21,7 @@ export default function SignupPage() {
     nickname: '',
   })
 
-  const { execute, loading, error } = useApi(signup)
+  const { execute, loading } = useApi(signup)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -34,7 +35,7 @@ export default function SignupPage() {
     e.preventDefault()
 
     if (form.password !== form.confirm) {
-      alert('Passwords do not match.')
+      toast.error('Passwords do not match.')
       return
     }
 
@@ -45,11 +46,10 @@ export default function SignupPage() {
         nickname: form.nickname,
       })
 
-      alert('Registration successful.')
+      toast.success('Signed up successfully.')
       navigate('/login')
-    } catch (err) {
-      console.error(err)
-      alert('Registration failed. Please try again.')
+    } catch {
+      // handleApiError에서 이미 toast.error() 처리됨
     }
   }
 
@@ -66,7 +66,6 @@ export default function SignupPage() {
             value={form.email}
             onChange={handleChange}
           />
-
           <AuthInput
             name='password'
             placeholder='password'
@@ -74,7 +73,6 @@ export default function SignupPage() {
             value={form.password}
             onChange={handleChange}
           />
-
           <AuthInput
             name='confirm'
             placeholder='confirm password'
@@ -82,7 +80,6 @@ export default function SignupPage() {
             value={form.confirm}
             onChange={handleChange}
           />
-
           <AuthInput
             name='nickname'
             placeholder='name'
@@ -90,13 +87,10 @@ export default function SignupPage() {
             value={form.nickname}
             onChange={handleChange}
           />
-
           <AuthButton type='submit' disabled={loading}>
             {loading ? 'Creating...' : 'Create account'}
           </AuthButton>
         </AuthForm>
-
-        {error && <p className='text-red-500'>{String(error)}</p>}
 
         <AuthFooterLink text='Already have an account?' linkText='Sign in' href='/login' />
       </AuthCard>

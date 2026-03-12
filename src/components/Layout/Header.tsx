@@ -17,7 +17,7 @@ export default function Header() {
       <div className='backdrop-blur-md bg-white/70 border-b border-gray-100'>
         <nav className='flex h-16 items-center justify-between px-10'>
           <Link to='/' className='text-xl font-extrabold tracking-tight font-Aquire'>
-            PINGPONG
+            NEXUS
           </Link>
 
           <ul className='flex items-center gap-8 text-sm font-medium text-gray-700'>

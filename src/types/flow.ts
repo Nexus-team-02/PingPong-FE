@@ -33,6 +33,20 @@ export interface CommentData {
   endpoints?: LinkedEndpoint[]
 }
 
+export interface FlowPageState {
+  title?: string
+  subtitle?: string
+}
+
+export function isFlowPageState(value: unknown): value is FlowPageState {
+  if (!value || typeof value !== 'object') return false
+  const v = value as Record<string, unknown>
+  return (
+    (v.title === undefined || typeof v.title === 'string') &&
+    (v.subtitle === undefined || typeof v.subtitle === 'string')
+  )
+}
+
 export interface CreateCommentRequest {
   x: number
   y: number

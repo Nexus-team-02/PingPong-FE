@@ -119,7 +119,7 @@ export default function CommentPin({
         onSave?.(text, result?.id ?? result)
         setIsOpen(false)
       } catch {
-        alert('댓글을 저장하지 못했습니다.')
+        // handleApiError에서 이미 toast.error() 처리됨
       }
     } else {
       onSave?.(text, comment.id)

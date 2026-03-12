@@ -11,6 +11,7 @@ import AuthorizeModal from '@/components/api/AuthorizeModal'
 import Folder from '@/components/common/Folder'
 import CreateFlowModal from '@/components/api/CreateFlowModal'
 import PlusIcon from '@/assets/plus.svg?react'
+import Spinner from '@/components/common/Spinner'
 
 export default function FrontendApiDocsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -20,9 +21,7 @@ export default function FrontendApiDocsPage() {
   const { execute: fetchFlows, data: flowData, loading: flowLoading } = useApi(getFlow)
 
   const { teamId } = useParams()
-
   const navigate = useNavigate()
-
   const role = useTeamRoleStore((s) => s.role)
   const isFrontend = role === 'FRONTEND'
 
@@ -52,11 +51,9 @@ export default function FrontendApiDocsPage() {
     return endpoints.reduce(
       (acc, endpoint) => {
         if (endpoint.status !== 'CHANGED') return acc
-
         if (endpoint.changeType === 'CREATED') acc.created.push(endpoint)
         if (endpoint.changeType === 'MODIFIED') acc.modified.push(endpoint)
         if (endpoint.changeType === 'DELETED') acc.deleted.push(endpoint)
-
         return acc
       },
       {
@@ -68,7 +65,6 @@ export default function FrontendApiDocsPage() {
   }, [endpoints])
 
   const hasChanges = created.length > 0 || modified.length > 0 || deleted.length > 0
-
   const isSyncing = loading || flowLoading
 
   return (
@@ -185,25 +181,28 @@ export default function FrontendApiDocsPage() {
             )}
           </div>
         </div>
-        {flowLoading && <div>Loading flows...</div>}
 
-        <div className='flex flex-wrap gap-6 mt-6 ml-3'>
-          {flowData?.map((flow) => (
-            <Folder
-              key={flow.flowId}
-              imageUrl={flow.thumbnailUrl}
-              folderName={flow.title}
-              onClick={() => {
-                navigate(`integration/${flow.flowId}`, {
-                  state: {
-                    title: flow.title,
-                    subtitle: flow.description || `${flow.title} API 연동 상세 페이지입니다.`,
-                  },
-                })
-              }}
-            />
-          ))}
-        </div>
+        {flowLoading ? (
+          <Spinner />
+        ) : (
+          <div className='flex flex-wrap gap-6 mt-6 ml-3'>
+            {flowData?.map((flow) => (
+              <Folder
+                key={flow.flowId}
+                imageUrl={flow.thumbnailUrl}
+                folderName={flow.title}
+                onClick={() => {
+                  navigate(`integration/${flow.flowId}`, {
+                    state: {
+                      title: flow.title,
+                      subtitle: flow.description || `${flow.title} API 연동 상세 페이지입니다.`,
+                    },
+                  })
+                }}
+              />
+            ))}
+          </div>
+        )}
 
         {isModalOpen && <AuthorizeModal onClose={() => setIsModalOpen(false)} />}
         {isFlowModalOpen && (

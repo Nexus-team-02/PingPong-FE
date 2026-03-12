@@ -13,6 +13,8 @@ import { useTeamRoleStore } from '@/stores/teamRoleStore'
 import { getTeamMembers, getTeamRole } from '@/api/team'
 import { useLocation } from 'react-router-dom'
 import { Team } from '@/types/team'
+import Spinner from '@/components/common/Spinner'
+import ErrorMessage from '@/components/common/ErrorMessage'
 
 const TEAM_LINK_ICONS = {
   notion: NotionIcon,
@@ -44,9 +46,8 @@ export default function TeamDetailPage() {
     }
   }, [roleData, setRole])
 
-  if (!team) {
-    return <div>잘못된 접근입니다.</div>
-  }
+  if (!team) return <ErrorMessage message='잘못된 접근입니다.' />
+  if (loading) return <Spinner />
 
   return (
     <main className='mx-auto max-w-250 px-6 py-30'>
@@ -68,7 +69,7 @@ export default function TeamDetailPage() {
       </div>
 
       <div className='mt-20 space-y-16'>
-        {!loading ? <MemberSection teamId={team.teamId} members={memberData || []} /> : <></>}
+        <MemberSection teamId={team.teamId} members={memberData || []} />
         <APISection />
       </div>
     </main>

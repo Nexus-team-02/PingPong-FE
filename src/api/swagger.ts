@@ -2,6 +2,16 @@ import { client } from './client'
 import { handleApiError } from './handleApiError'
 import { ExecuteEndpointRequest } from '@/types/api'
 
+export async function getLatestSwagger(teamId: number) {
+  try {
+    const res = await client.get(`/${teamId}/latest`)
+    console.log(res)
+    return res.data.result
+  } catch (error) {
+    throw handleApiError(error)
+  }
+}
+
 export async function SyncSwagger(teamId: number) {
   try {
     const res = await client.post(`/api/v1/swagger/${teamId}/sync`)

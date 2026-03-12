@@ -66,7 +66,7 @@ export default function InviteModal({ teamId, onClose, onInvite }: Props) {
       bg='bg-gradient-to-b from-api-blue/10 to-white'
       onClose={onClose}
     >
-      <p className='mb-4 text-[12px] text-gray-500'>Start PINGPONG with your team member</p>
+      <p className='mb-4 text-[12px] text-gray-500'>Start NEXUS with your team member</p>
 
       <div className='relative mb-4'>
         <input

@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useOutletContext, useParams } from 'react-router-dom'
 import { useTeamRoleStore } from '@/stores/teamRoleStore'
-import { useFlowComments } from '../../hook/useFlowComments'
+import { useFlowComments } from '@/hook/useFlowComments'
+import { isFlowPageState } from '@/types/flow'
 import LeftIcon from '@/assets/left.svg?react'
 import RightIcon from '@/assets/right.svg?react'
 import EditIcon from '@/assets/edit.svg?react'
 import CommentCanvas from '@/components/Flow/CommentCanvas'
 import LinkedApiAccordionItem from '@/components/api/LinkedApiAccordionItem'
 import ApiLinkModal from '@/components/Flow/ApiLinkModal'
+import Spinner from '@/components/common/Spinner'
 
 interface TeamLayoutContext {
   setDynamicTitle: (title: string | null) => void
@@ -39,18 +41,17 @@ export default function ApiIntegrationPage() {
   })
 
   useEffect(() => {
-    const state = location.state as { title?: string; subtitle?: string } | null
-    if (state?.title) setDynamicTitle(state.title)
-    if (state?.subtitle) setDynamicSubtitle(state.subtitle)
+    if (isFlowPageState(location.state)) {
+      if (location.state.title) setDynamicTitle(location.state.title)
+      if (location.state.subtitle) setDynamicSubtitle(location.state.subtitle)
+    }
     return () => {
       setDynamicTitle(null)
       setDynamicSubtitle(null)
     }
   }, [location.state, setDynamicSubtitle, setDynamicTitle])
 
-  if (flowLoading) {
-    return <div className='min-h-screen flex items-center justify-center'>Loading...</div>
-  }
+  if (flowLoading) return <Spinner />
 
   return (
     <div className='min-h-screen p-10 pt-50 z-20 flex flex-col items-center'>
@@ -87,7 +88,7 @@ export default function ApiIntegrationPage() {
 
       <div className='w-full max-w-5xl mt-10'>
         {commentsLoading ? (
-          <div className='text-center text-gray-500'>연결된 API 정보를 불러오는 중입니다...</div>
+          <Spinner />
         ) : groupedApiData.length > 0 ? (
           groupedApiData.map((group) => (
             <div key={group.tag} className='mt-8 mb-8'>
@@ -95,6 +96,7 @@ export default function ApiIntegrationPage() {
               <div className='flex flex-col gap-4'>
                 {group.endpoints.map((ep) => (
                   <LinkedApiAccordionItem
+                    key={ep.endpointId}
                     method={ep.method}
                     path={ep.path}
                     summary={ep.summary}

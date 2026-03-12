@@ -8,7 +8,7 @@ export interface Team {
   discord?: string
   swagger?: string
   github?: string
-  thumbnail?: string
+  thumbnailUrl?: string
   isUpdated: boolean
 }
 

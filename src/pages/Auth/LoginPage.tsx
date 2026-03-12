@@ -10,6 +10,7 @@ import AuthInput from '@/components/Auth/AuthInput'
 import AuthTitle from '@/components/Auth/AuthTitle'
 import AuthForm from '@/components/Auth/AuthForm'
 import AuthFooterLink from '@/components/Auth/AuthFooterLink'
+import { toast } from 'sonner'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -19,7 +20,7 @@ export default function LoginPage() {
     password: '',
   })
 
-  const { execute, loading, error } = useApi(login)
+  const { execute, loading } = useApi(login)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -44,18 +45,17 @@ export default function LoginPage() {
         user: result.user,
       })
 
-      alert('Login successful.')
+      toast.success('Logged in successfully.')
       navigate('/')
-    } catch (err) {
-      console.log(err)
-      alert('Login failed.')
+    } catch {
+      // handleApiError에서 이미 toast.error() 처리됨
     }
   }
 
   return (
     <AuthLayout>
       <AuthCard>
-        <AuthTitle title='LOGIN' subtitle='Welcome PingPong' />
+        <AuthTitle title='LOGIN' subtitle='Welcome NEXUS' />
 
         <AuthForm onSubmit={handleLogin}>
           <AuthInput
@@ -65,7 +65,6 @@ export default function LoginPage() {
             value={form.email}
             onChange={handleChange}
           />
-
           <AuthInput
             name='password'
             placeholder='password'
@@ -74,10 +73,10 @@ export default function LoginPage() {
             onChange={handleChange}
           />
           <AuthButton type='submit' disabled={loading}>
-            {loading ? 'Start PingPong...' : 'Start PingPong'}
+            {loading ? 'Start NEXUS...' : 'Start NEXUS'}
           </AuthButton>
         </AuthForm>
-        {error && <p className='text-red-500'>{String(error)}</p>}
+
         <AuthFooterLink text="Don't have an account?" linkText='Sign up' href='/signup' />
       </AuthCard>
     </AuthLayout>
