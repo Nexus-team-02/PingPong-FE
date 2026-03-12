@@ -9,13 +9,13 @@ interface Props {
 
 export default function ProjectCard({ team }: Props) {
   const navigate = useNavigate()
-  const { isUpdated, name, thumbnail, teamId } = team
+  const { isUpdated, name, thumbnailUrl, teamId } = team
   const [imgError, setImgError] = useState(false)
 
   const handleClick = () => {
     navigate(`/team/${teamId}`, { state: team })
   }
-
+  console.log(thumbnailUrl)
   return (
     <div
       onClick={handleClick}
@@ -28,13 +28,13 @@ export default function ProjectCard({ team }: Props) {
         {isUpdated ? 'UPDATE' : 'OPEN'}
       </span>
 
-      {!thumbnail || imgError ? (
+      {!thumbnailUrl || imgError ? (
         <div className='h-50 w-full bg-gray-300/50 flex items-center justify-center'>
           <img src={FALLBACK_IMG} alt='placeholder' className='w-12 h-12 opacity-50' />
         </div>
       ) : (
         <img
-          src={thumbnail}
+          src={thumbnailUrl}
           alt={name}
           onError={() => setImgError(true)}
           className='h-50 w-full object-cover'
