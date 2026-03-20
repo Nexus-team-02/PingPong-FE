@@ -20,6 +20,7 @@ export function useGanttTasks(teamId: number) {
         const initializedPages = result.pages.map((page: Page) => ({
           ...page,
           originalDate: page.date,
+          originalCompletedDate: page.completedDate,
           originalTitle: page.title,
           originalStatus: page.status,
         }))
@@ -57,14 +58,25 @@ export function useGanttTasks(teamId: number) {
           !p.isNew &&
           (p.title !== p.originalTitle ||
             p.status !== p.originalStatus ||
-            JSON.stringify(p.date) !== JSON.stringify(p.originalDate)),
+            JSON.stringify(p.date) !== JSON.stringify(p.originalDate) ||
+            JSON.stringify(p.completedDate) !== JSON.stringify(p.originalCompletedDate)),
       )
 
       const createRequests = createTargets.map((p) =>
-        executeCreate(teamId, { title: p.title, status: p.status, date: p.date }),
+        executeCreate(teamId, {
+          title: p.title,
+          status: p.status,
+          date: p.date,
+          completedDate: p.completedDate,
+        }),
       )
       const updateRequests = updateTargets.map((p) =>
-        executeUpdate(teamId, p.id, { title: p.title, status: p.status, date: p.date }),
+        executeUpdate(teamId, p.id, {
+          title: p.title,
+          status: p.status,
+          date: p.date,
+          completedDate: p.completedDate,
+        }),
       )
 
       await Promise.all([...createRequests, ...updateRequests])
@@ -74,6 +86,8 @@ export function useGanttTasks(teamId: number) {
           ...p,
           originalTitle: p.title,
           originalStatus: p.status,
+          originalDate: p.date,
+          originalCompletedDate: p.completedDate,
           isNew: false,
         })),
       )

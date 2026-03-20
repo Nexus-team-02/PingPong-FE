@@ -101,7 +101,12 @@ function TaskRow({ page, isEditing, onChange, DAY_WIDTH }: TaskRowProps) {
         >
           {page.date && (
             <>
-              <ActualBar date={page.date} DAY_WIDTH={DAY_WIDTH} status={page.status} />
+              <ActualBar
+                date={page.date}
+                completedDate={page.completedDate}
+                DAY_WIDTH={DAY_WIDTH}
+                status={page.status}
+              />
               <PlannedBar
                 page={page}
                 isEditing={isEditing}
