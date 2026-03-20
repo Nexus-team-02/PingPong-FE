@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import ApiAccordionItem from './ApiAccordionItem'
+import ApiAccordionItem from './ApiAccordion/ApiAccordionItem'
 import { completeEndpoint } from '@/api/swagger'
 import useApi from '@/hook/useApi'
 import { HttpMethod } from '@/types/api'

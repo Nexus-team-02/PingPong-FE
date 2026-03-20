@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Open from '@/assets/up.svg?react'
-import Spinner from '../common/Spinner'
+import Spinner from '../../common/Spinner'
 import { getDetailsEndpoint, executeEndpoint } from '@/api/swagger'
 import useApi from '@/hook/useApi'
 import { useApiAuthStore } from '@/stores/apiAuthStore'
