@@ -13,7 +13,7 @@ import MyPage from '@/pages/Users/MyPage'
 import TeamCreatePage from '@/pages/Team/TeamCreatePage'
 import TeamDetailPage from '@/pages/Team/TeamDetailPage'
 
-import BackendApiDocsPage from '@/pages/Backend/BackendApiDocs'
+import BackendApiDocsPage from '@/pages/Backend/BackendApiDocsPage'
 import FrontendApiDocsPage from '@/pages/Frontend/FrontendApiDocsPage'
 import ApiIntegrationPage from '@/pages/Frontend/ApiIntegrationPage'
 import PmPage from '@/pages/PM/PmPage'
