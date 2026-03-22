@@ -18,6 +18,7 @@ export interface CreateTeamRequest {
   discord: string
   swagger: string
   github: string
+  githubBranch: string
   creatorRole: string
 }
 
@@ -27,6 +28,7 @@ export interface CreateTeamForm {
   discord: string
   swagger: string
   github: string
+  githubBranch: string
   creatorRole: Role
 }
 

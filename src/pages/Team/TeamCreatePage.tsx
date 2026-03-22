@@ -19,6 +19,7 @@ export default function TeamCreatePage() {
     discord: '',
     swagger: '',
     github: '',
+    githubBranch: 'main',
     creatorRole: 'PM',
   })
 

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router-dom' // useLocation 제거
+import { useParams, useNavigate } from 'react-router-dom'
 import { SyncSwagger } from '@/api/swagger'
 import useApi from '@/hook/useApi'
 import { useApiDocs } from '@/hook/useApiDocs'
@@ -7,6 +7,7 @@ import ChangeSection from '@/components/api/ChangeSection'
 import EndpointListView from '@/components/api/EndpointListView'
 import BackendToolbar from '@/components/api/BackendToolbar'
 import AuthorizeModal from '@/components/api/AuthorizeModal'
+import GitHubSection from '@/components/api/GithubSection'
 import Folder from '@/components/common/Folder'
 import Spinner from '@/components/common/Spinner'
 
@@ -42,6 +43,8 @@ export default function BackendApiDocsPage() {
   return (
     <div className='min-h-screen p-20 z-20'>
       <div className='w-full rounded-xl bg-white mx-auto p-8 mt-35'>
+        <GitHubSection />
+
         {hasChanges && <ChangeSection created={created} modified={modified} deleted={deleted} />}
 
         <BackendToolbar
