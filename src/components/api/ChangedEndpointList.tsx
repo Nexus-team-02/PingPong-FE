@@ -1,4 +1,4 @@
-import ApiDiffAccordionItem from './ApiDiffAccordion/Apidiffaccordionitem'
+import ApiDiffAccordionItem from './ApiDiffAccordion/ApiDiffAccordionItem'
 import { HttpMethod } from '@/types/api'
 
 type Endpoint = {

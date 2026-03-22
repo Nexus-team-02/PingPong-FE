@@ -6,9 +6,9 @@ import useApi from '@/hook/useApi'
 import { HttpMethod } from '@/types/api'
 import { METHOD_STYLE } from '@/constants/method'
 
-import ApiDiffParameters from './Apidiffparameters'
-import ApiDiffRequestBody from './Apidiffrequestbody'
-import ApiDiffResponses from './Apidiffresponses'
+import ApiDiffParameters from './ApiDiffParameters'
+import ApiDiffRequestBody from './ApiDiffRequestBody'
+import ApiDiffResponses from './ApiDiffResponses'
 
 interface Props {
   method: HttpMethod
