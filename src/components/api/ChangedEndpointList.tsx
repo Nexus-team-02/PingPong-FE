@@ -1,4 +1,4 @@
-import ApiAccordionItem from '@/components/api/ApiAccordion/ApiAccordionItem'
+import ApiDiffAccordionItem from './ApiDiffAccordion/ApiDiffAccordionItem'
 import { HttpMethod } from '@/types/api'
 
 type Endpoint = {
@@ -15,28 +15,20 @@ const CHANGE_CONFIG: Record<
   {
     label: string
     colorClass: string
-    borderColor: string
-    bg: string
     wrapperClass?: string
   }
 > = {
   CREATED: {
     label: 'ADD',
     colorClass: 'bg-api-green',
-    borderColor: 'border-l-green-500',
-    bg: 'bg-green-50/50',
   },
   MODIFIED: {
     label: 'UPDATE',
     colorClass: 'bg-api-yellow',
-    borderColor: 'border-l-amber-500',
-    bg: 'bg-amber-50/50',
   },
   DELETED: {
     label: 'DELETE',
     colorClass: 'bg-api-red',
-    borderColor: 'border-l-red-400',
-    bg: 'bg-red-50/50',
     wrapperClass: 'opacity-60',
   },
 }
@@ -58,7 +50,7 @@ export default function ChangedEndpointList({ endpoints, changeType }: Props) {
       </div>
       <div className={`flex flex-col gap-3 mt-4 ${wrapperClass ?? ''}`}>
         {endpoints.map((endpoint) => (
-          <ApiAccordionItem
+          <ApiDiffAccordionItem
             key={endpoint.endpointId}
             method={endpoint.method}
             path={endpoint.path}

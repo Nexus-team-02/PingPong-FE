@@ -51,3 +51,19 @@ export interface ExecutionResult {
   message?: string
   details?: unknown
 }
+
+export type DiffType = 'ADDED' | 'DELETED' | 'MODIFIED' | 'UNCHANGED'
+
+export interface DiffItem<T> {
+  diffType: DiffType
+  before: T | null
+  after: T | null
+}
+
+export interface EndpointDiffDetail {
+  path: string
+  method: HttpMethod
+  parameters: DiffItem<ApiParameter>[]
+  requests: DiffItem<ApiRequest>[]
+  responses: DiffItem<ApiResponse>[]
+}

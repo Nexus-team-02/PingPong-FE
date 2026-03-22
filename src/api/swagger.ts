@@ -14,7 +14,7 @@ export async function getLatestSwagger(teamId: number) {
 
 export async function SyncSwagger(teamId: number) {
   try {
-    const res = await client.post(`/api/v1/swagger/${teamId}/sync`)
+    const res = await client.post(`/api/v1/teams/${teamId}/sync-all`)
     console.log(res)
     return res.data.result
   } catch (error) {
@@ -54,6 +54,16 @@ export async function getAllEndpoints(teamId: number) {
 export async function getDetailsEndpoint(endpointId: number) {
   try {
     const res = await client.get(`/api/v1/endpoints/${endpointId}`)
+    console.log(res)
+    return res.data.result
+  } catch (error) {
+    throw handleApiError(error)
+  }
+}
+
+export async function getDiffDetailsEndpoint(endpointId: number) {
+  try {
+    const res = await client.get(`/api/v1/endpoints/diff/${endpointId}`)
     console.log(res)
     return res.data.result
   } catch (error) {
