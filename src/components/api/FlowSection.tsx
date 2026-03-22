@@ -48,7 +48,7 @@ export default function FlowSection({
       {loading ? (
         <Spinner />
       ) : (
-        <div className='rounded-xl border border-gray-200 bg-white p-5'>
+        <div className='rounded-xl bg-white border border-gray-200 shadow-sm p-5'>
           <div className='flex flex-wrap gap-6 mb-5 mx-3'>
             {flows.map((flow) => (
               <Folder

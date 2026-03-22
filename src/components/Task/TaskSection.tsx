@@ -98,7 +98,7 @@ export default function TaskSection({ availableFlows }: TaskSectionProps) {
           <Spinner />
         ) : (
           <div className='grid grid-cols-2 gap-4'>
-            <div className='rounded-xl border border-gray-200 bg-white p-5'>
+            <div className='rounded-xl bg-white border border-gray-200 shadow-sm p-5'>
               <p className='text-sm font-semibold text-gray-700 mb-4'>Flow 연결 중</p>
               {inProgress.length === 0 ? (
                 <p className='text-xs text-gray-400 text-center py-8'>진행 중인 Task가 없습니다.</p>
