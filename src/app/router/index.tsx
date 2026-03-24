@@ -1,24 +1,23 @@
 import { createBrowserRouter } from 'react-router-dom'
-import ProtectedRoute from '@/components/common/ProtectedRoute'
+import ProtectedRoute from '@/shared/components/ProtectedRoute'
 
 import RootLayout from '@/layouts/RootLayout'
 import MainLayout from '@/layouts/MainLayout'
 import TeamLayout from '@/layouts/TeamLayout'
 
-import HomePage from '@/pages/Home'
-import LoginPage from '@/pages/Auth/LoginPage'
-import SignupPage from '@/pages/Auth/SignupPage'
-import MyPage from '@/pages/Users/MyPage'
+import HomePage from '@/features/user/pages'
+import LoginPage from '@/features/auth/pages/LoginPage'
+import SignupPage from '@/features/auth/pages/SignupPage'
+import MyPage from '@/features/user/pages/MyPage'
+import TeamCreatePage from '@/features/team/pages/TeamCreatePage'
+import TeamDetailPage from '@/features/team/pages/TeamDetailPage'
 
-import TeamCreatePage from '@/pages/Team/TeamCreatePage'
-import TeamDetailPage from '@/pages/Team/TeamDetailPage'
-
-import BackendApiDocsPage from '@/pages/Backend/BackendApiDocsPage'
-import FrontendApiDocsPage from '@/pages/Frontend/FrontendApiDocsPage'
-import ApiIntegrationPage from '@/pages/Frontend/ApiIntegrationPage'
-import PmPage from '@/pages/PM/PmPage'
-import NotionCallback from '@/pages/PM/NotionCallback'
-import QaPage from '@/pages/QA/QaPage'
+import BackendApiDocsPage from '@/features/backend/pages/BackendApiDocsPage'
+import FrontendApiDocsPage from '@/features/frontend/pages/FrontendApiDocsPage'
+import ApiIntegrationPage from '@/features/frontend/pages/ApiIntegrationPage'
+import PmPage from '@/features/pm/pages/PmPage'
+import NotionCallback from '@/features/pm/pages/NotionCallback'
+import QaPage from '@/features/qa/pages/QaPage'
 
 export const router = createBrowserRouter([
   {
