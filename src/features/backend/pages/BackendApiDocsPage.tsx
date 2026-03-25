@@ -31,16 +31,24 @@ export default function BackendApiDocsPage() {
     hasChanges,
     flowData,
     flowLoading,
+    refetch,
   } = useApiDocs(teamId)
 
   const isSyncing = swaggerLoading || syncLoading || flowLoading
 
-  const handleSync = useCallback(() => {
+  const handleSync = useCallback(async () => {
     if (!teamId) return
-    syncSwagger(Number(teamId))
-  }, [teamId, syncSwagger])
 
-  // Ref 설정
+    try {
+      await syncSwagger(Number(teamId))
+      if (refetch) {
+        refetch()
+      }
+    } catch (error) {
+      console.error('Swagger sync failed:', error)
+    }
+  }, [teamId, syncSwagger, refetch])
+
   const githubRef = useRef<HTMLDivElement>(null)
   const changesRef = useRef<HTMLDivElement>(null)
   const apiRef = useRef<HTMLDivElement>(null)
