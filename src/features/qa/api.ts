@@ -1,5 +1,6 @@
 import { client } from '@/shared/api/client'
 import { handleApiError } from '@/shared/api/handleApiError'
+import { useApiAuthStore } from '@/shared/stores/apiAuthStore'
 
 export async function getTags(teamId: number) {
   try {
@@ -49,7 +50,15 @@ export async function getAllExecuteResult(qaId: number) {
 
 export async function executeQaCase(qaId: number) {
   try {
-    const res = await client.post(`/api/v1/qa/${qaId}/execute`)
+    const token = useApiAuthStore.getState().token
+
+    console.log(token)
+    const res = await client.post(`/api/v1/qa/${qaId}/execute`, undefined, {
+      headers: {
+        ...(token && { 'X-Proxy-Authorization': `Bearer ${token}` }),
+      },
+    })
+
     console.log(qaId, '번 QA CASE 실행:', res)
     return res.data.result
   } catch (error) {
