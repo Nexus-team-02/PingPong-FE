@@ -24,11 +24,17 @@ client.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfigWithRetry
-    if (error.response?.status === 401 && !originalRequest._retry) {
+
+    const skipReissueUrls = ['/api/v1/auth/login', '/api/v1/members', '/api/v1/auth/reissue']
+    const requestUrl = originalRequest.url ?? ''
+    const isSkipped = skipReissueUrls.some((url) => requestUrl.includes(url))
+
+    const { refreshToken } = useAuthStore.getState()
+
+    if (error.response?.status === 401 && !originalRequest._retry && !isSkipped && refreshToken) {
       originalRequest._retry = true
 
       try {
-        const { refreshToken } = useAuthStore.getState()
         const reissueRes = await axios.post(
           '/api/v1/auth/reissue',
           {},
