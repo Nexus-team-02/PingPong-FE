@@ -43,7 +43,6 @@ export default function QaCaseAccordion({
   const [isExecuting, setIsExecuting] = useState(false)
   const [localSuccess, setLocalSuccess] = useState<boolean | null>(qaCase.isSuccess)
 
-  // Try it out state
   const [isTryItOut, setIsTryItOut] = useState(false)
   const [paramsInput, setParamsInput] = useState<Record<string, string>>({})
   const [headersInput, setHeadersInput] = useState<Record<string, string>>({})
@@ -52,12 +51,10 @@ export default function QaCaseAccordion({
 
   const isContentLoading = detailLoading || executeResultsLoading
 
-  // 서버 데이터가 바뀌면 동기화
   useEffect(() => {
     setLocalSuccess(qaCase.isSuccess)
   }, [qaCase.isSuccess])
 
-  // 펼칠 때 상세 데이터 패치
   useEffect(() => {
     if (!expanded) return
     if (!detail && !detailLoading) fetchDetail(qaCase.qaId)
@@ -73,7 +70,6 @@ export default function QaCaseAccordion({
     qaCase.qaId,
   ])
 
-  // Try it out 초기값: detail 로드 완료 시 qaData로 채움
   useEffect(() => {
     if (!detail) return
     const { qaData, parameters } = detail
@@ -105,7 +101,6 @@ export default function QaCaseAccordion({
     setParamsInput((prev) => ({ ...prev, [name]: value }))
   }
 
-  // Re-run execute (Try it out)
   const handleReRunExecute = async () => {
     if (!detail) return
 
@@ -153,12 +148,15 @@ export default function QaCaseAccordion({
 
     try {
       await onRun(qaCase.qaId)
-      setLocalSuccess(true)
-      onSuccessChange(qaCase.qaId, true)
 
-      if (expanded) {
-        await Promise.all([fetchDetail(qaCase.qaId), fetchExecuteResults(qaCase.qaId)])
-      }
+      const [, results] = await Promise.all([
+        fetchDetail(qaCase.qaId),
+        fetchExecuteResults(qaCase.qaId),
+      ])
+
+      const actualSuccess = (results as QaExecuteResult[] | null)?.[0]?.isSuccess ?? false
+      setLocalSuccess(actualSuccess)
+      onSuccessChange(qaCase.qaId, actualSuccess)
     } catch {
       setLocalSuccess(false)
       onSuccessChange(qaCase.qaId, false)
@@ -167,7 +165,6 @@ export default function QaCaseAccordion({
     }
   }
 
-  // Run All 시그널
   useEffect(() => {
     if (runAllSignal > 0) executeSelf()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -178,7 +175,7 @@ export default function QaCaseAccordion({
     executeSelf()
   }
 
-  // ── Status icon ──────────────────────────────────────────────────────────────
+  // ── Status icon ───
   const statusIcon = isExecuting ? (
     <svg className='h-5 w-5 shrink-0 animate-spin text-gray-400' viewBox='0 0 24 24' fill='none'>
       <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' />
@@ -218,7 +215,7 @@ export default function QaCaseAccordion({
 
   return (
     <div className='rounded-xl border border-gray-100 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow'>
-      {/* ── Header ───────────────────────────────────────────────────────────── */}
+      {/* ── Header ─── */}
       <div
         onClick={onToggle}
         role='button'
@@ -261,7 +258,7 @@ export default function QaCaseAccordion({
         </button>
       </div>
 
-      {/* ── Expanded body ─────────────────────────────────────────────────────── */}
+      {/* ── Expanded body ── */}
       {expanded && (
         <div className='space-y-3 border-t border-gray-300 px-4 py-4'>
           {isContentLoading && (
@@ -309,10 +306,7 @@ export default function QaCaseAccordion({
                 setBodyInput={setBodyInput}
               />
 
-              {/* Try it out 실행 결과 (우선 표시) */}
               {liveResult && <QaCaseExecutionResult result={liveResult} isLive />}
-
-              {/* 기존 최신 결과 */}
               {!liveResult && <QaCaseExecutionResult result={executeResults[0]} />}
 
               <QaCaseResponses detail={detail} />

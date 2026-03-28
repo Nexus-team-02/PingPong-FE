@@ -17,7 +17,14 @@ export default function QaPage() {
     setDynamicSubtitle('')
   }, [setDynamicTitle, setDynamicSubtitle])
 
-  const [selectedEndpoint, setSelectedEndpoint] = useState<QaEndpoint | null>(null)
+  const [selectedEndpoint, setSelectedEndpoint] = useState<QaEndpoint | null>(() => {
+    try {
+      const saved = localStorage.getItem('qa-selected-endpoint')
+      return saved ? (JSON.parse(saved) as QaEndpoint) : null
+    } catch {
+      return null
+    }
+  })
   const [expandedCases, setExpandedCases] = useState<Set<number>>(new Set())
   const [runAllSignal, setRunAllSignal] = useState(0)
 
@@ -52,6 +59,8 @@ export default function QaPage() {
     setSelectedEndpoint(endpoint)
     setExpandedCases(new Set())
     setLocalSuccessMap({})
+    setRunAllSignal(0)
+    localStorage.setItem('qa-selected-endpoint', JSON.stringify(endpoint))
   }, [])
 
   const toggleCase = useCallback((id: number) => {

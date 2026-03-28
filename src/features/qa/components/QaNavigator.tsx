@@ -56,6 +56,22 @@ export default function QaNavigator({
     fetchTags(teamId)
   }, [teamId, fetchTags])
 
+  useEffect(() => {
+    if (!tags?.length) return
+
+    const allEndpoints = tags.flatMap((t) => t.endpoints)
+    if (!allEndpoints.length) return
+
+    if (selectedEndpointId === null) {
+      onSelectEndpoint(allEndpoints[0])
+      return
+    }
+
+    const exists = allEndpoints.some((ep) => ep.endpointId === selectedEndpointId)
+    if (!exists) onSelectEndpoint(allEndpoints[0])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tags])
+
   const toggleTag = (tag: string) => {
     setCollapsedTags((prev) => {
       const next = new Set(prev)
