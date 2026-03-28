@@ -57,66 +57,144 @@ function timeAgo(dateStr: string): string {
   return `${Math.floor(diff / 86400)}일 전`
 }
 
-const STATUS_STYLE: Record<string, string> = {
-  modified: 'text-yellow-500 border-yellow-500',
-  added: 'text-green-500 border-green-500',
-  removed: 'text-red-500 border-red-500',
+const STATUS_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
+  modified: { bg: 'bg-amber-50 border-amber-200', text: 'text-amber-600', dot: 'bg-amber-400' },
+  added: {
+    bg: 'bg-emerald-50 border-emerald-200',
+    text: 'text-emerald-600',
+    dot: 'bg-emerald-400',
+  },
+  removed: { bg: 'bg-red-50 border-red-200', text: 'text-red-500', dot: 'bg-red-400' },
+}
+
+function ChevronIcon({ expanded }: { expanded: boolean }) {
+  return (
+    <svg
+      width='14'
+      height='14'
+      viewBox='0 0 14 14'
+      fill='none'
+      className='shrink-0 text-gray-400 transition-transform duration-200'
+      style={{ transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)' }}
+    >
+      <path
+        d='M5 3L9 7L5 11'
+        stroke='currentColor'
+        strokeWidth='1.6'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
+    </svg>
+  )
 }
 
 function DiffFileCard({ file }: { file: DiffFile }) {
   const [expanded, setExpanded] = useState(true)
-  const statusStyle = STATUS_STYLE[file.status] ?? 'text-gray-500 border-gray-400'
+  const statusCfg = STATUS_CONFIG[file.status] ?? {
+    bg: 'bg-gray-50 border-gray-200',
+    text: 'text-gray-500',
+    dot: 'bg-gray-400',
+  }
+
+  const parts = file.fileName.split('/')
+  const shortName = parts[parts.length - 1]
+  const dirPath = parts.slice(0, -1).join('/') + (parts.length > 1 ? '/' : '')
 
   return (
-    <div className='border border-gray-200 rounded-lg overflow-hidden bg-white'>
+    <div className='rounded-lg overflow-hidden border border-gray-200'>
+      {/* Accordion header — light */}
       <button
-        className='w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 transition-colors text-left'
+        className='w-full flex items-center gap-2.5 px-4 py-2.5 bg-gray-50/50 hover:bg-gray-100 transition-colors text-left'
         onClick={() => setExpanded((v) => !v)}
       >
-        <div className='flex items-center gap-2 min-w-0 flex-1'>
-          <span className='text-gray-400 text-xs shrink-0'>{expanded ? '▾' : '▸'}</span>
+        <ChevronIcon expanded={expanded} />
+
+        <svg
+          width='13'
+          height='14'
+          viewBox='0 0 13 14'
+          fill='none'
+          className='shrink-0 text-gray-500'
+        >
+          <path
+            d='M2 1H8.5L11 3.5V13H2V1Z'
+            stroke='currentColor'
+            strokeWidth='1.2'
+            strokeLinejoin='round'
+          />
+          <path d='M8 1V4H11' stroke='currentColor' strokeWidth='1.2' strokeLinejoin='round' />
+        </svg>
+
+        <span className='flex-1 min-w-0 flex items-baseline gap-0.5 text-sm'>
+          {dirPath && (
+            <span className='text-gray-500 text-xs truncate shrink-0 max-w-[40%]'>{dirPath}</span>
+          )}
           <a
             href={file.githubFileUrl}
             target='_blank'
             rel='noopener noreferrer'
-            className='text-blue-600 text-sm font-semibold hover:underline truncate'
+            className='text-gray-800 font-medium hover:text-blue-600 transition-colors truncate'
             onClick={(e) => e.stopPropagation()}
           >
-            {file.fileName}
+            {shortName}
           </a>
-          <span
-            className={`shrink-0 text-xs font-medium border rounded px-1.5 py-0.5 capitalize ${statusStyle}`}
-          >
-            {file.status}
-          </span>
-        </div>
-        <div className='flex gap-3 shrink-0 ml-3 text-xs font-semibold'>
-          <span className='text-green-500'>+{file.additions}</span>
-          <span className='text-red-400'>−{file.deletions}</span>
+        </span>
+
+        <span
+          className={`shrink-0 flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full border ${statusCfg.bg} ${statusCfg.text}`}
+        >
+          <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot}`} />
+          {file.status}
+        </span>
+
+        <div className='flex gap-2.5 shrink-0 text-xs font-mono font-semibold'>
+          <span className='text-emerald-600'>+{file.additions}</span>
+          <span className='text-red-500'>−{file.deletions}</span>
         </div>
       </button>
 
+      {/* Code diff — dark only here */}
       {expanded && (
-        <div className='max-h-80 overflow-y-auto border-t border-gray-200'>
-          {file.changesPreview.map((line, i) => (
-            <div
-              key={i}
-              className={`flex items-start gap-2.5 px-4 py-0.5 text-xs leading-5 font-mono ${
-                line.type === 'add'
-                  ? 'bg-green-500/10'
-                  : line.type === 'delete'
-                    ? 'bg-red-500/10'
-                    : ''
-              }`}
-            >
-              <span className='shrink-0 w-3 font-bold select-none text-gray-400'>
-                {line.type === 'add' ? '+' : line.type === 'delete' ? '−' : ' '}
-              </span>
-              <span className='flex-1 text-gray-800 whitespace-pre overflow-hidden font-mono'>
-                {line.content}
-              </span>
-            </div>
-          ))}
+        <div className='max-h-80 overflow-y-auto bg-[#0d1117] border-t border-gray-200'>
+          <table className='w-full border-collapse text-xs font-mono leading-5'>
+            <tbody>
+              {file.changesPreview.map((line, i) => (
+                <tr
+                  key={i}
+                  className={
+                    line.type === 'add'
+                      ? 'bg-emerald-500/10 hover:bg-emerald-500/15'
+                      : line.type === 'delete'
+                        ? 'bg-red-500/10 hover:bg-red-500/15'
+                        : 'hover:bg-white/5'
+                  }
+                >
+                  <td className='w-8 text-center select-none border-r border-white/5 py-0.5 px-2 shrink-0'>
+                    {line.type === 'add' ? (
+                      <span className='text-emerald-400 font-bold'>+</span>
+                    ) : line.type === 'delete' ? (
+                      <span className='text-red-400 font-bold'>−</span>
+                    ) : (
+                      <span className='text-slate-700'> </span>
+                    )}
+                  </td>
+                  <td className='py-0.5 px-3 whitespace-pre overflow-hidden'>
+                    <span
+                      className={
+                        line.type === 'add'
+                          ? 'text-emerald-300'
+                          : line.type === 'delete'
+                            ? 'text-red-300'
+                            : 'text-slate-400'
+                      }
+                    >
+                      {line.content}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
@@ -197,6 +275,7 @@ export default function GitHubSection() {
             <p className='text-gray-400 text-xs'>마지막 동기화 {timeAgo(config.lastSyncedAt)}</p>
           )}
         </div>
+
         {isLoading && (
           <div className='flex gap-1.5 py-3'>
             {[0, 1, 2].map((i) => (
@@ -208,6 +287,7 @@ export default function GitHubSection() {
             ))}
           </div>
         )}
+
         {!isLoading && apiError && (
           <div className='flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-sm'>
             <span className='text-red-400 text-base shrink-0'>⚠</span>
@@ -216,11 +296,12 @@ export default function GitHubSection() {
                 {apiError?.response?.data?.message ?? 'GitHub 동기화 결과를 불러오지 못했습니다.'}
               </p>
               {apiError?.response?.data?.code && (
-                <p className='text-red-400/70 text-xs mt-0.5'>{apiError?.response?.data?.code}</p>
+                <p className='text-red-400/70 text-xs mt-0.5'>{apiError.response.data.code}</p>
               )}
             </div>
           </div>
         )}
+
         {!isLoading && !apiError && !sync?.changed && (
           <div className='flex items-center gap-2 text-green-500 text-sm py-2'>
             <span className='text-base'>✓</span>
@@ -231,7 +312,7 @@ export default function GitHubSection() {
         {!isLoading && !apiError && diffData && sync?.changed && (
           <>
             {diffData.compare && (
-              <div className='flex items-start gap-3 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 mb-3'>
+              <div className='flex items-start gap-3 bg-gray-50/50 border border-gray-200 rounded-lg px-4 py-3 mb-3'>
                 <img
                   src={diffData.compare.latestCommit.authorProfileImage}
                   alt='author'
@@ -262,8 +343,8 @@ export default function GitHubSection() {
                 <span className='text-gray-500'>
                   <strong className='text-gray-800'>{diffData.summary.filesChanged}</strong> files
                 </span>
-                <span className='text-green-500 font-medium'>+{diffData.summary.additions}</span>
-                <span className='text-red-400 font-medium'>−{diffData.summary.deletions}</span>
+                <span className='text-emerald-600 font-medium'>+{diffData.summary.additions}</span>
+                <span className='text-red-500 font-medium'>−{diffData.summary.deletions}</span>
               </div>
             )}
 
