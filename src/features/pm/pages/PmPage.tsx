@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import NotionSection from '@/features/pm/components/NotionSection'
 import GanttChart from '@/features/pm/components/Gantt/GanttChart'
 import AIChatWidget from '@/features/pm/components/AIChatWidget'
-import ChatBtn from '@/assets/chat_btn.svg?react'
+import ChatButton from '@/features/pm/components/ChatButton'
 import { getNotionStatus } from '@/features/pm/api'
 import useApi from '@/shared/hooks/useApi'
 import Spinner from '@/shared/components/Spinner'
@@ -18,6 +18,9 @@ interface NotionStatus {
 
 export default function PmPage() {
   const [isChatOpen, setIsChatOpen] = useState(false)
+  const [isChatMounted, setIsChatMounted] = useState(false)
+  const [isChatVisible, setIsChatVisible] = useState(false)
+
   const { teamId } = useParams()
   const { execute } = useApi(getNotionStatus)
 
@@ -49,14 +52,32 @@ export default function PmPage() {
     fetchStatus()
   }, [fetchStatus])
 
+  const handleOpenChat = () => {
+    setIsChatOpen(true)
+    setIsChatMounted(true)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setIsChatVisible(true))
+    })
+  }
+
+  const handleCloseChat = () => {
+    setIsChatVisible(false)
+    setTimeout(() => {
+      setIsChatMounted(false)
+      setIsChatOpen(false)
+    }, 300)
+  }
+
   const handleUpdated = fetchStatus
 
   if (loading) return <Spinner />
 
   return (
-    <div className='pt-30 px-30'>
+    <div className='pt-30 px-16'>
       {isReady ? (
-        <GanttChart />
+        <div className='mt-15'>
+          <GanttChart />
+        </div>
       ) : (
         <div className='mt-30 mx-10'>
           <NotionSection
@@ -67,11 +88,20 @@ export default function PmPage() {
         </div>
       )}
 
-      <ChatBtn
-        className='cursor-pointer fixed bottom-10 right-10 w-16 h-16 hover:scale-105 transition-transform z-50'
-        onClick={() => setIsChatOpen(true)}
-      />
-      <AIChatWidget isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <ChatButton onClick={handleOpenChat} />
+
+      {isChatMounted && (
+        <div
+          className='fixed bottom-0 right-0 z-50 transition-all duration-300 ease-out'
+          style={{
+            opacity: isChatVisible ? 1 : 0,
+            transform: isChatVisible ? 'translateY(0) scale(1)' : 'translateY(16px) scale(0.97)',
+            transformOrigin: 'bottom right',
+          }}
+        >
+          <AIChatWidget isOpen={isChatOpen} onClose={handleCloseChat} />
+        </div>
+      )}
     </div>
   )
 }

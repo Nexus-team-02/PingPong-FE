@@ -28,9 +28,7 @@ export default function PlannedBar({
     const originalEnd = new Date(page.date.end)
 
     const onMove = (moveEvent: MouseEvent) => {
-      const delta = moveEvent.clientX - startX
-      const dayChange = Math.round(delta / DAY_WIDTH)
-
+      const dayChange = Math.round((moveEvent.clientX - startX) / DAY_WIDTH)
       const newStart = addDays(originalStart, dayChange)
       const newEnd = addDays(originalEnd, dayChange)
 
@@ -49,7 +47,7 @@ export default function PlannedBar({
     window.addEventListener('mouseup', onUp)
   }
 
-  const handleResize = (e: React.MouseEvent) => {
+  const handleResizeRight = (e: React.MouseEvent) => {
     if (!isEditing || !page.date) return
     e.stopPropagation()
 
@@ -57,8 +55,7 @@ export default function PlannedBar({
     const originalEnd = new Date(page.date.end)
 
     const onMove = (moveEvent: MouseEvent) => {
-      const delta = moveEvent.clientX - startX
-      const dayChange = Math.round(delta / DAY_WIDTH)
+      const dayChange = Math.round((moveEvent.clientX - startX) / DAY_WIDTH)
       const newEnd = addDays(originalEnd, dayChange)
       const startDate = new Date(page.date!.start)
       const finalEnd = newEnd < startDate ? startDate : newEnd
@@ -67,15 +64,8 @@ export default function PlannedBar({
       if (container) {
         const rect = container.getBoundingClientRect()
         const edgeThreshold = 40
-        const scrollSpeed = 5
-
-        if (moveEvent.clientX > rect.right - edgeThreshold) {
-          container.scrollLeft += scrollSpeed
-        }
-
-        if (moveEvent.clientX < rect.left + edgeThreshold) {
-          container.scrollLeft -= scrollSpeed
-        }
+        if (moveEvent.clientX > rect.right - edgeThreshold) container.scrollLeft += 5
+        if (moveEvent.clientX < rect.left + edgeThreshold) container.scrollLeft -= 5
       }
 
       onChange({
@@ -96,20 +86,20 @@ export default function PlannedBar({
   return (
     <div
       onMouseDown={handleDrag}
-      className={`absolute h-8 rounded-sm bg-gray-300 transition-all ${
+      className={`absolute h-6 rounded-sm bg-gray-300 transition-all ${
         isEditing
-          ? 'cursor-move opacity-90 hover:opacity-100 z-20 shadow-md ring-1 ring-black/5'
+          ? 'cursor-move opacity-80 hover:opacity-100 z-20 shadow-sm ring-1 ring-black/5'
           : 'cursor-default z-0 opacity-50'
       }`}
       style={{
         left: startOffset * DAY_WIDTH,
         width: duration * DAY_WIDTH,
-        top: isEditing ? 'calc(50% - 12px)' : 'calc(50% - 16px)',
+        top: 'calc(50% + 4px)',
       }}
     >
       {isEditing && (
         <div
-          onMouseDown={handleResize}
+          onMouseDown={handleResizeRight}
           className='absolute right-0 top-0 h-full w-3 bg-black/10 cursor-ew-resize hover:bg-black/20 transition-colors rounded-r-sm'
         />
       )}
