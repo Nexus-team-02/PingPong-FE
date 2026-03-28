@@ -64,6 +64,7 @@ export default function LoginPage() {
             type='email'
             value={form.email}
             onChange={handleChange}
+            autoComplete='username'
           />
           <AuthInput
             name='password'
@@ -71,6 +72,7 @@ export default function LoginPage() {
             type='password'
             value={form.password}
             onChange={handleChange}
+            autoComplete='current-password'
           />
           <AuthButton type='submit' disabled={loading}>
             {loading ? 'Start NEXUS...' : 'Start NEXUS'}

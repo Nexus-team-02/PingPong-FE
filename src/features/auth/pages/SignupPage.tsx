@@ -65,6 +65,7 @@ export default function SignupPage() {
             type='email'
             value={form.email}
             onChange={handleChange}
+            autoComplete='username'
           />
           <AuthInput
             name='password'
@@ -72,6 +73,7 @@ export default function SignupPage() {
             type='password'
             value={form.password}
             onChange={handleChange}
+            autoComplete='new-password'
           />
           <AuthInput
             name='confirm'
@@ -79,6 +81,7 @@ export default function SignupPage() {
             type='password'
             value={form.confirm}
             onChange={handleChange}
+            autoComplete='new-password'
           />
           <AuthInput
             name='nickname'
