@@ -13,7 +13,8 @@ createRoot(document.getElementById('root')!).render(
       position='top-right'
       autoClose={3000}
       theme='light'
-      toastClassName='text-sm font-medium mt-15'
+      toastClassName='text-sm font-medium'
+      style={{ top: '80px' }}
     />
   </StrictMode>,
 )
