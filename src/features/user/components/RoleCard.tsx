@@ -1,22 +1,149 @@
-import Right from '@/assets/right.svg?react'
-
 interface RoleCardProps {
-  title: string
-  description: string
+  role: 'BACKEND' | 'FRONTEND' | 'PM/QA'
+  icon: string
+  docCount: number
+  tags: string[]
+  progress: number
+  index: number
 }
 
-export default function RoleCard({ title, description }: RoleCardProps) {
-  return (
-    <div className='group relative rounded-2xl bg-white p-4 shadow-lg transition hover:-translate-y-1 hover:shadow-lg h-[50vh]'>
-      <div className='h-full border border-gray-200 rounded-2xl p-4 flex flex-col items-center justify-center'>
-        <h2 className='mb-4 text-2xl font-extrabold'>{title}</h2>
-        <p className='mb-[20vh] text-xs text-gray-300 whitespace-pre-line text-center'>
-          {description}
-        </p>
+const ROLE_CONFIG = {
+  BACKEND: {
+    label: 'Backend',
+    sub: 'Server & API',
+    accent: '#d97706',
+    tint: 'rgba(217,119,6,0.06)',
+    tintHover: 'rgba(217,119,6,0.1)',
+    tagline: 'REST API, 인증 흐름, 데이터베이스 연동까지. 서버 개발자를 위한 완전한 레퍼런스.',
+    startAs: 'back-end developer',
+    num: '01',
+  },
+  FRONTEND: {
+    label: 'Frontend',
+    sub: 'UI & Components',
+    accent: '#2563eb',
+    tint: 'rgba(37,99,235,0.06)',
+    tintHover: 'rgba(37,99,235,0.1)',
+    tagline: '컴포넌트 라이브러리, 디자인 토큰, UI 가이드라인. 프론트 개발자를 위한 모든 것.',
+    startAs: 'front-end developer',
+    num: '02',
+  },
+  'PM/QA': {
+    label: 'PM / QA',
+    sub: 'Process & Quality',
+    accent: '#059669',
+    tint: 'rgba(5,150,105,0.06)',
+    tintHover: 'rgba(5,150,105,0.1)',
+    tagline: '플로우 차트, 요구사항 명세, 테스트 시나리오. 기획·QA를 위한 구조화된 가이드.',
+    startAs: 'product manager',
+    num: '03',
+  },
+}
 
-        <button className='transition group-hover:scale-105'>
-          <Right className='w-10 h-10 cursor-pointer' />
-        </button>
+export default function RoleCard({ role, icon, tags }: RoleCardProps) {
+  const cfg = ROLE_CONFIG[role]
+
+  return (
+    <div
+      className='group relative flex flex-col rounded-2xl bg-white cursor-pointer'
+      style={{
+        border: '1.5px solid #e5e7eb',
+        transition: 'border-color 0.22s, box-shadow 0.22s, transform 0.22s',
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLDivElement
+        el.style.borderColor = cfg.accent
+        el.style.boxShadow = `0 12px 40px rgba(0,0,0,0.09), 0 0 0 1px ${cfg.accent}`
+        el.style.transform = 'translateY(-4px)'
+        const tint = el.querySelector<HTMLElement>('.card-tint')
+        if (tint) tint.style.background = cfg.tintHover
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLDivElement
+        el.style.borderColor = '#e5e7eb'
+        el.style.boxShadow = 'none'
+        el.style.transform = 'translateY(0)'
+        const tint = el.querySelector<HTMLElement>('.card-tint')
+        if (tint) tint.style.background = cfg.tint
+      }}
+    >
+      {/* Tinted header */}
+      <div
+        className='card-tint rounded-t-[14px] px-5 pt-5 pb-4'
+        style={{ background: cfg.tint, transition: 'background 0.22s' }}
+      >
+        <div className='flex items-start justify-between mb-4'>
+          <div
+            className='w-11 h-11 rounded-xl bg-white flex items-center justify-center text-xl'
+            style={{
+              border: '1px solid rgba(0,0,0,0.07)',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+            }}
+          >
+            {icon}
+          </div>
+          <span
+            className='text-[11px] font-mono font-bold tracking-[0.2em]'
+            style={{ color: cfg.accent, opacity: 0.4 }}
+          >
+            {cfg.num}
+          </span>
+        </div>
+
+        <h2
+          className='text-[30px] font-black leading-none tracking-tight text-gray-900 mb-1.5'
+          style={{ fontFamily: "'Syne', 'DM Sans', sans-serif" }}
+        >
+          {cfg.label}
+        </h2>
+      </div>
+
+      {/* Content */}
+      <div className='flex flex-col flex-1 px-5 pt-4 pb-5 gap-4'>
+        <p className='text-[13px] text-gray-500 leading-relaxed'>{cfg.tagline}</p>
+
+        {/* Tags */}
+        <div className='flex flex-wrap gap-1.5'>
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className='text-[10px] font-mono px-2 py-0.5 rounded-md'
+              style={{
+                background: cfg.tint,
+                color: cfg.accent,
+                border: `1px solid ${cfg.accent}28`,
+              }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <div className='flex-1' />
+
+        {/* Footer */}
+        <div className='flex items-center justify-between pt-3 border-t border-gray-100'>
+          <div>
+            <p className='text-[11px] text-gray-400 font-mono leading-snug'>Start 'NEXUS'</p>
+            <p className='text-[11px] text-gray-400 font-mono leading-snug'>as a {cfg.startAs}</p>
+          </div>
+
+          <button
+            className='flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-bold tracking-wider transition-all duration-150 active:scale-95 hover:opacity-85'
+            style={{ background: cfg.accent, color: '#fff', letterSpacing: '0.05em' }}
+          >
+            START
+            <svg width='12' height='12' viewBox='0 0 12 12' fill='none'>
+              <path
+                d='M2 6H10M7 3L10 6L7 9'
+                stroke='white'
+                strokeWidth='1.5'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   )
