@@ -12,14 +12,14 @@ const ROLES = [
     role: 'FRONTEND' as const,
     icon: '🎨',
     docCount: 41,
-    tags: ['Components', 'Design Tokens', 'SDK', 'Examples'],
+    tags: ['Flows', 'Swagger', 'API Test', 'Examples'],
     progress: 91,
   },
   {
     role: 'PM/QA' as const,
     icon: '📋',
     docCount: 19,
-    tags: ['Flowcharts', 'Specs', 'Test Cases', 'Releases'],
+    tags: ['Ganttcharts', 'Specs', 'Test Cases', 'Releases'],
     progress: 67,
   },
 ]
