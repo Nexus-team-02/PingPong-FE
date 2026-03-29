@@ -50,10 +50,9 @@ export default function TeamDetailPage() {
   if (loading) return <Spinner />
 
   return (
-    <main className='mx-auto max-w-250 px-6 py-30'>
-      <div>
+    <main className='mx-auto max-w-270 py-30'>
+      <div className='animate-fade-up'>
         <h1 className='font-extrabold text-3xl'>{team.name}</h1>
-
         <div className='mt-4 flex items-center gap-2.5'>
           {(Object.keys(TEAM_LINK_ICONS) as TeamLinkKey[]).map((key) => {
             const url = team[key]
@@ -69,8 +68,12 @@ export default function TeamDetailPage() {
       </div>
 
       <div className='mt-20 space-y-16'>
-        <MemberSection teamId={team.teamId} members={memberData || []} />
-        <APISection />
+        <div className='animate-card-in anim-delay-[0.1s]'>
+          <MemberSection teamId={team.teamId} members={memberData || []} />
+        </div>
+        <div className='animate-card-in anim-delay-[0.2s]'>
+          <APISection />
+        </div>
       </div>
     </main>
   )

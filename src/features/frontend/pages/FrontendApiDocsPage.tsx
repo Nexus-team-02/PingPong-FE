@@ -104,14 +104,17 @@ export default function FrontendApiDocsPage() {
     <div className='relative min-h-screen p-20 z-20'>
       <FloatingNav items={navItems} />
 
-      <div className='w-full rounded-xl bg-white mx-auto p-8 mt-35'>
+      <div className='w-full rounded-xl bg-white mx-auto p-8 mt-35 animate-fade-up'>
         {hasChanges && (
           <div ref={changesRef} className='scroll-mt-32'>
             <ChangeSection created={created} modified={modified} deleted={deleted} />
           </div>
         )}
 
-        <div ref={flowRef} className={`scroll-mt-32 ${hasChanges ? 'mt-10' : ''}`}>
+        <div
+          ref={flowRef}
+          className={`scroll-mt-32 animate-card-in anim-delay-[0.1s] ${hasChanges ? 'mt-10' : ''}`}
+        >
           <FlowSection
             flows={flowData ?? []}
             loading={flowLoading}
@@ -121,7 +124,7 @@ export default function FrontendApiDocsPage() {
           />
         </div>
 
-        <div ref={taskRef} className='scroll-mt-32 mt-10'>
+        <div ref={taskRef} className='scroll-mt-32 mt-10 animate-card-in anim-delay-[0.2s]'>
           <TaskSection availableFlows={flowData ?? []} />
         </div>
 

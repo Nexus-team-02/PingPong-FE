@@ -74,19 +74,21 @@ export default function PmPage() {
 
   return (
     <div className='pt-30 px-16'>
-      {isReady ? (
-        <div className='mt-15'>
-          <GanttChart />
-        </div>
-      ) : (
-        <div className='mt-30 mx-10'>
-          <NotionSection
-            connected={notionStatus.connected}
-            databaseSelected={notionStatus.databaseSelected}
-            onUpdated={handleUpdated}
-          />
-        </div>
-      )}
+      <div className='animate-fade-up'>
+        {isReady ? (
+          <div className='mt-15'>
+            <GanttChart />
+          </div>
+        ) : (
+          <div className='mt-30 mx-10'>
+            <NotionSection
+              connected={notionStatus.connected}
+              databaseSelected={notionStatus.databaseSelected}
+              onUpdated={handleUpdated}
+            />
+          </div>
+        )}
+      </div>
 
       <ChatButton onClick={handleOpenChat} />
 

@@ -58,18 +58,17 @@ export default function ApiIntegrationPage() {
       {role === 'FRONTEND' && (
         <EditIcon
           onClick={() => setEditMode((prev) => !prev)}
-          className={`w-6 h-6 ml-170 transition cursor-pointer ${
+          className={`w-6 h-6 ml-170 transition cursor-pointer animate-fade-in ${
             editMode ? 'text-red-500 hover:text-red-600' : 'text-gray-700 hover:text-blue-700'
           }`}
         />
       )}
 
-      <div className='w-full max-w-5xl flex items-center justify-between mb-16 mt-10'>
+      <div className='w-full max-w-5xl flex items-center justify-between mb-16 mt-10 animate-fade-up'>
         <LeftIcon
           onClick={goToPrev}
           className='cursor-pointer w-12 h-12 flex items-center justify-center bg-black text-white rounded-full hover:bg-gray-800 transition'
         />
-
         <div className='relative w-180 h-105'>
           <CommentCanvas
             currentImage={currentImage}
@@ -79,14 +78,13 @@ export default function ApiIntegrationPage() {
             onOpenApiModal={(requestId) => setModalState({ open: true, requestId })}
           />
         </div>
-
         <RightIcon
           onClick={goToNext}
           className='cursor-pointer w-12 h-12 flex items-center justify-center bg-black text-white rounded-full hover:bg-gray-800 transition'
         />
       </div>
 
-      <div className='w-full max-w-5xl mt-10'>
+      <div className='w-full max-w-5xl mt-10 animate-fade-up anim-delay-[0.15s]'>
         {commentsLoading ? (
           <Spinner />
         ) : groupedApiData.length > 0 ? (

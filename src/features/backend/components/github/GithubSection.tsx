@@ -102,9 +102,8 @@ function DiffFileCard({ file }: { file: DiffFile }) {
 
   return (
     <div className='rounded-lg overflow-hidden border border-gray-200'>
-      {/* Accordion header — light */}
       <button
-        className='w-full flex items-center gap-2.5 px-4 py-2.5 bg-gray-50/50 hover:bg-gray-100 transition-colors text-left'
+        className='cursor-pointer w-full flex items-center gap-2.5 px-4 py-2.5 bg-gray-50/50 hover:bg-gray-100 transition-colors text-left'
         onClick={() => setExpanded((v) => !v)}
       >
         <ChevronIcon expanded={expanded} />
@@ -133,7 +132,7 @@ function DiffFileCard({ file }: { file: DiffFile }) {
             href={file.githubFileUrl}
             target='_blank'
             rel='noopener noreferrer'
-            className='text-gray-800 font-medium hover:text-blue-600 transition-colors truncate'
+            className='cursor-pointer text-gray-800 font-medium hover:text-blue-600 transition-colors truncate'
             onClick={(e) => e.stopPropagation()}
           >
             {shortName}

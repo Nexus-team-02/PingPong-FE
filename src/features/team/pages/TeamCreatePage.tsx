@@ -52,23 +52,29 @@ export default function TeamCreatePage() {
 
   return (
     <main className='mx-auto max-w-250 px-6 py-30'>
-      <TeamTitle value={form.name} onChange={(value) => handleChange('name', value)} />
-
-      <div className='mt-12 space-y-16'>
-        <CreatorSection
-          value={form.creatorRole}
-          onChange={(value: Role) => handleChange('creatorRole', value)}
-        />
-        <LinkSection
-          figma={form.figma}
-          discord={form.discord}
-          swagger={form.swagger}
-          github={form.github}
-          onChange={handleChange}
-        />
+      <div className='animate-fade-up'>
+        <TeamTitle value={form.name} onChange={(value) => handleChange('name', value)} />
       </div>
 
-      <div className='mt-20 flex justify-center gap-4'>
+      <div className='mt-12 space-y-16'>
+        <div className='animate-fade-up anim-delay-[0.1s]'>
+          <CreatorSection
+            value={form.creatorRole}
+            onChange={(value: Role) => handleChange('creatorRole', value)}
+          />
+        </div>
+        <div className='animate-fade-up anim-delay-[0.2s]'>
+          <LinkSection
+            figma={form.figma}
+            discord={form.discord}
+            swagger={form.swagger}
+            github={form.github}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+
+      <div className='mt-20 flex justify-center gap-4 animate-fade-up anim-delay-[0.3s]'>
         <Button variant='outline' onClick={handleCancel} disabled={loading}>
           CANCEL
         </Button>

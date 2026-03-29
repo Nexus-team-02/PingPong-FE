@@ -110,11 +110,14 @@ export default function QaPage() {
 
   return (
     <div className='flex min-h-screen overflow-hidden pt-16'>
-      <QaNavigator
-        teamId={Number(teamId)}
-        selectedEndpointId={selectedEndpoint?.endpointId ?? null}
-        onSelectEndpoint={handleSelectEndpoint}
-      />
+      <div className='animate-fade-in'>
+        <QaNavigator
+          teamId={Number(teamId)}
+          selectedEndpointId={selectedEndpoint?.endpointId ?? null}
+          onSelectEndpoint={handleSelectEndpoint}
+        />
+      </div>
+
       <main className='flex-1 overflow-y-auto px-6 py-5'>
         {!selectedEndpoint ? (
           <div className='flex h-full flex-col items-center justify-center text-gray-400'>
@@ -122,7 +125,7 @@ export default function QaPage() {
           </div>
         ) : (
           <>
-            <div className='mb-5 flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-3.5 shadow-sm'>
+            <div className='mb-5 flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-3.5 shadow-sm animate-fade-up'>
               <span
                 className={`rounded-full px-4 py-1.5 text-sm font-bold text-white ${METHOD_STYLE[selectedEndpoint.method]?.badge ?? 'bg-gray-500'}`}
               >
@@ -139,7 +142,7 @@ export default function QaPage() {
               <button
                 onClick={handleRunAll}
                 disabled={casesLoading || !cases?.length}
-                className='ml-auto flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50'
+                className='cursor-pointer ml-auto flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50'
               >
                 Run All
                 <svg className='ml-0.5 h-4 w-4' viewBox='0 0 16 16' fill='currentColor'>
@@ -189,7 +192,7 @@ export default function QaPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className='flex h-48 flex-col items-center justify-center text-gray-400'>
+                  <div className='flex h-48 flex-col items-center justify-center text-gray-400 animate-fade-up'>
                     <svg
                       className='mb-2 h-10 w-10 opacity-40'
                       viewBox='0 0 24 24'

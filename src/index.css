@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap');
+
 @import 'tailwindcss';
 
 @font-face {
@@ -90,6 +92,21 @@
   }
 }
 
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 @theme {
   --color-api-red: #f93e3e;
   --color-api-blue: #61affe;
@@ -149,12 +166,28 @@
 
   --bg-qa: linear-gradient(355deg, rgba(255, 255, 255, 0.1) 14.72%, rgba(0, 161, 87, 0.1) 85.59%);
 
---color-dot-gray: #c8c6be;
+  --color-dot-gray: #c8c6be;
   --color-dot-bg: #f7f6f3;
   --bg-dot-pattern: radial-gradient(circle, var(--color-dot-gray) 1px, transparent 1px);
+
+  --ease-spring: cubic-bezier(.22, 1, .36, 1);
+
+  --animate-fade-up:  fade-up  0.6s var(--ease-spring) both;
+  --animate-card-in:  card-in  0.6s var(--ease-spring) both;
+  --animate-fade-in:  fade-in  0.4s var(--ease-spring) both;
+}
+
+@utility anim-delay-* {
+  animation-delay: --value([ s | ms ]);
 }
 
 @layer components {
+  .font-syne {
+    font-family: 'Syne', sans-serif;
+  }
+  .font-dm-sans {
+    font-family: 'DM Sans', sans-serif;
+  }
   .font-Aquire {
     font-family: 'Aquire', cursive;
   }

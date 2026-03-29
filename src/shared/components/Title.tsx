@@ -17,8 +17,6 @@ export default function Title({ children, right, size = 'md' }: TitleProps) {
         <h2 className={`tracking-tight font-bold text-black ${sizeMap[size]}`}>{children}</h2>
         {right && <div>{right}</div>}
       </div>
-
-      <div className='w-full border-b border-black mt-3' />
     </div>
   )
 }

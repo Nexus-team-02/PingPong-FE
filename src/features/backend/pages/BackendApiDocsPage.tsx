@@ -57,6 +57,10 @@ export default function BackendApiDocsPage() {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const scrollToTag = (tag: string) => {
+    document.getElementById(`tag-${tag}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const navItems: FloatingNavItem[] = [
     {
       id: 'github',
@@ -130,6 +134,11 @@ export default function BackendApiDocsPage() {
       onClick: () => scrollToSection(apiRef),
       labelBgClass: 'bg-green-600',
       iconTextClass: 'text-green-600',
+      subItems: (swaggerData ?? []).map((group) => ({
+        id: group.tag,
+        label: group.tag,
+      })),
+      onSubItemClick: scrollToTag,
     },
   ]
 
@@ -137,13 +146,13 @@ export default function BackendApiDocsPage() {
     <div className='relative min-h-screen p-20 z-20'>
       <FloatingNav items={navItems} />
 
-      <div className='w-full rounded-xl bg-white mx-auto p-8 mt-35'>
+      <div className='w-full rounded-xl bg-white mx-auto p-8 mt-35 animate-fade-up'>
         <div ref={githubRef} className='scroll-mt-32'>
           <GitHubSection />
         </div>
 
         {hasChanges && (
-          <div ref={changesRef} className='scroll-mt-32 mt-10'>
+          <div ref={changesRef} className='scroll-mt-32 mt-10 animate-card-in anim-delay-[0.1s]'>
             <ChangeSection created={created} modified={modified} deleted={deleted} />
           </div>
         )}

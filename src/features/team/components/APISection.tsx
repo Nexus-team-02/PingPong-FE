@@ -141,10 +141,10 @@ export default function TeamSection() {
   }
 
   return (
-    <section className='flex flex-col gap-4'>
-      <Title size='lg'>Team Roles</Title>
+    <section className='flex flex-col bg-gray-100/30 p-5 rounded-xl border border-black/5'>
+      <Title size='lg'>TEAM DOCS</Title>
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2'>
         {TEAM_SECTIONS.map((section) => (
           <div
             key={section.id}

@@ -22,7 +22,11 @@ export default function EndpointListView({ groups }: Props) {
   return (
     <>
       {groups.map((group) => (
-        <div key={group.tag} className='mt-8 mb-8'>
+        <div
+          key={group.tag}
+          id={`tag-${group.tag}`} // ← 앵커 포인트
+          className='mt-8 mb-8 scroll-mt-36'
+        >
           <Title>{group.tag}</Title>
           <div className='flex flex-col gap-4 mt-4'>
             {group.endpoints.map((endpoint) => (

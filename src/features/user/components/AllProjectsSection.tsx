@@ -20,7 +20,7 @@ export default function AllProjectsSection({ teams }: Props) {
   const items = filtered.slice(start, start + PER_PAGE)
 
   return (
-    <section className='mx-32 mb-20'>
+    <section className='mx-32 mb-20 '>
       <Title right={<SearchInput value={query} onChange={setQuery} />}>ALL</Title>
 
       <ProjectGrid teams={items} />
