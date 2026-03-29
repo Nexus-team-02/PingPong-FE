@@ -5,8 +5,20 @@ import Plus from '@/assets/plus.svg?react'
 import MemberCard from './MemberCard'
 import InviteModal from './InviteModal'
 
-export default function MemberSection({ members, teamId }: { members: Member[]; teamId: number }) {
+export default function MemberSection({
+  members: initialMembers,
+  teamId,
+}: {
+  members: Member[]
+  teamId: number
+}) {
+  const [members, setMembers] = useState<Member[]>(initialMembers)
   const [isOpen, setOpen] = useState(false)
+
+  const handleInvite = (newMembers: Member[]) => {
+    setMembers((prev) => [...prev, ...newMembers])
+  }
+
   return (
     <section className='bg-gray-100/30 p-5 rounded-xl border border-black/5'>
       <Title
@@ -22,7 +34,9 @@ export default function MemberSection({ members, teamId }: { members: Member[]; 
         ))}
       </div>
 
-      {isOpen && <InviteModal teamId={teamId} onClose={() => setOpen(false)} />}
+      {isOpen && (
+        <InviteModal teamId={teamId} onClose={() => setOpen(false)} onInvite={handleInvite} />
+      )}
     </section>
   )
 }
