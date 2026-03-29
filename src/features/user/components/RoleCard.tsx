@@ -45,7 +45,7 @@ export default function RoleCard({ role, icon, tags }: RoleCardProps) {
 
   return (
     <div
-      className='group relative flex flex-col rounded-2xl bg-white cursor-pointer'
+      className='group relative flex flex-col rounded-2xl bg-white'
       style={{
         border: '1.5px solid #e5e7eb',
         transition: 'border-color 0.22s, box-shadow 0.22s, transform 0.22s',
@@ -129,7 +129,7 @@ export default function RoleCard({ role, icon, tags }: RoleCardProps) {
           </div>
 
           <button
-            className='flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-bold tracking-wider transition-all duration-150 active:scale-95 hover:opacity-85'
+            className='cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-bold tracking-wider transition-all duration-150 active:scale-95 hover:opacity-85'
             style={{ background: cfg.accent, color: '#fff', letterSpacing: '0.05em' }}
           >
             START

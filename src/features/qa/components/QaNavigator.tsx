@@ -95,7 +95,7 @@ export default function QaNavigator({
 
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className={`flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-bold transition-colors ${
+              className={`flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-bold transition-colors cursor-pointer ${
                 token
                   ? 'border-api-green bg-api-green-sub text-api-green'
                   : 'border-gray-400 bg-transparent text-gray-600 hover:bg-black/5'
@@ -140,7 +140,7 @@ export default function QaNavigator({
                 <div key={tagGroup.tag}>
                   <button
                     onClick={() => toggleTag(tagGroup.tag)}
-                    className='flex w-full items-center gap-2 mb-1 group'
+                    className='cursor-pointer flex w-full items-center gap-2 mb-1 group'
                   >
                     <svg
                       className='w-3.5 h-3.5 text-gray-700'
@@ -174,7 +174,7 @@ export default function QaNavigator({
                           <button
                             key={ep.endpointId}
                             onClick={() => onSelectEndpoint(ep)}
-                            className={`w-full rounded-lg px-2 py-2 text-left transition-all ${
+                            className={`w-full rounded-lg px-2 py-2 text-left transition-all cursor-pointer ${
                               isSelected ? 'bg-white shadow-sm' : 'hover:bg-white/50'
                             }`}
                           >
