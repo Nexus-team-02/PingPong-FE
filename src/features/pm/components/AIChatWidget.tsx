@@ -11,98 +11,27 @@ import remarkGfm from 'remark-gfm'
 interface Props {
   isOpen: boolean
   onClose: () => void
+  suggestions?: string[]
 }
-
-const loadingDotsStyle = `
-  @keyframes bounce-dot {
-    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-    40% { transform: translateY(-6px); opacity: 1; }
-  }
-  .dot-1 { animation: bounce-dot 1.2s infinite ease-in-out; animation-delay: 0s; }
-  .dot-2 { animation: bounce-dot 1.2s infinite ease-in-out; animation-delay: 0.2s; }
-  .dot-3 { animation: bounce-dot 1.2s infinite ease-in-out; animation-delay: 0.4s; }
-`
 
 function LoadingDots() {
   return (
-    <>
-      <style>{loadingDotsStyle}</style>
-      <div className='flex items-center gap-1 h-5 px-1'>
-        <span className='dot-1 w-2 h-2 rounded-full bg-[#b76aa9] inline-block' />
-        <span className='dot-2 w-2 h-2 rounded-full bg-[#b76aa9] inline-block' />
-        <span className='dot-3 w-2 h-2 rounded-full bg-[#b76aa9] inline-block' />
-      </div>
-    </>
+    <div className='flex items-center gap-1 h-5 px-1'>
+      <span className='animate-bounce-dot anim-delay-[0s]   w-2 h-2 rounded-full bg-[#c07ab4] inline-block' />
+      <span className='animate-bounce-dot anim-delay-[0.2s] w-2 h-2 rounded-full bg-[#c07ab4] inline-block' />
+      <span className='animate-bounce-dot anim-delay-[0.4s] w-2 h-2 rounded-full bg-[#c07ab4] inline-block' />
+    </div>
   )
 }
 
-const markdownStyles = `
-  .ai-markdown p { margin: 0 0 0.5em; line-height: 1.6; }
-  .ai-markdown p:last-child { margin-bottom: 0; }
-  .ai-markdown h1, .ai-markdown h2, .ai-markdown h3 {
-    font-weight: 700; margin: 0.75em 0 0.3em; line-height: 1.3;
-  }
-  .ai-markdown h1 { font-size: 1.15em; }
-  .ai-markdown h2 { font-size: 1.05em; }
-  .ai-markdown h3 { font-size: 0.97em; }
-  .ai-markdown ul, .ai-markdown ol {
-    margin: 0.4em 0; padding-left: 1.3em;
-  }
-  .ai-markdown li { margin: 0.2em 0; }
-  .ai-markdown code {
-    background: rgba(183,106,169,0.12);
-    color: #8a3d7f;
-    border-radius: 4px;
-    padding: 0.1em 0.35em;
-    font-size: 0.88em;
-    font-family: 'Menlo', 'Monaco', monospace;
-  }
-  .ai-markdown pre {
-    background: rgba(183,106,169,0.08);
-    border-radius: 10px;
-    padding: 0.8em 1em;
-    overflow-x: auto;
-    margin: 0.5em 0;
-  }
-  .ai-markdown pre code {
-    background: none;
-    padding: 0;
-    color: #6b3062;
-    font-size: 0.85em;
-  }
-  .ai-markdown strong { font-weight: 700; color: #5a2a52; }
-  .ai-markdown em { font-style: italic; }
-  .ai-markdown blockquote {
-    border-left: 3px solid #cb7cb5;
-    margin: 0.4em 0;
-    padding: 0.2em 0.8em;
-    color: #7a4a72;
-    background: rgba(203,124,181,0.07);
-    border-radius: 0 6px 6px 0;
-  }
-  .ai-markdown a { color: #b76aa9; text-decoration: underline; }
-  .ai-markdown hr { border: none; border-top: 1px solid rgba(183,106,169,0.25); margin: 0.6em 0; }
-  .ai-markdown table { border-collapse: collapse; width: 100%; font-size: 0.9em; margin: 0.4em 0; }
-  .ai-markdown th, .ai-markdown td {
-    border: 1px solid rgba(183,106,169,0.25);
-    padding: 0.3em 0.6em;
-  }
-  .ai-markdown th { background: rgba(203,124,181,0.1); font-weight: 700; }
-`
-
-export default function AIChatWidget({ isOpen, onClose }: Props) {
+export default function AIChatWidget({ isOpen, onClose, suggestions = [] }: Props) {
   const { teamId } = useParams()
   const [inputValue, setInputValue] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([])
-
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   useEffect(() => {
-    scrollToBottom()
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
   const handleSend = async (e: React.FormEvent) => {
@@ -128,45 +57,66 @@ export default function AIChatWidget({ isOpen, onClose }: Props) {
     }
   }
 
+  const showSuggestions = suggestions.length > 0 && messages.length === 0
+
   return (
     <>
-      <style>{markdownStyles}</style>
       {isOpen && (
-        <div className='fixed bottom-10 right-10 w-90 h-150 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] flex flex-col overflow-hidden z-50 border border-gray-100'>
-          <div className='bg-linear-to-r from-[#FBEDEC] to-[#F3ADCF] px-5 py-4 flex justify-between items-center'>
-            <div className='flex items-center gap-2 font-bold text-gray-900 text-[17px]'>
-              <HeaderIcon className='w-9 h-9' />
+        <div className='fixed bottom-10 right-10 w-90 h-150 bg-white rounded-2xl shadow-[0_12px_40px_rgba(180,100,160,0.15),0_2px_8px_rgba(0,0,0,0.06)] flex flex-col overflow-hidden z-50 border border-[#f0e0eb]'>
+          <div className='bg-linear-to-r from-[#fceef0] to-[#f5b8d8] px-5 py-4 flex justify-between items-center border-b border-[#f0d0e4]/60'>
+            <div className='flex items-center gap-2.5 font-bold text-gray-800 text-[16px] tracking-tight'>
+              <HeaderIcon className='w-8 h-8' />
               AI Assistant
             </div>
             <button
               onClick={onClose}
-              className='text-gray-800 hover:text-black transition-colors cursor-pointer'
+              className='w-7 h-7 flex items-center justify-center rounded-full text-[#9a6090] hover:bg-[#eed8e8] hover:text-[#6b3a64] transition-all cursor-pointer'
             >
               <svg
-                className='w-5 h-5'
+                className='w-4 h-4'
                 fill='none'
                 stroke='currentColor'
                 strokeWidth='2.5'
                 viewBox='0 0 24 24'
               >
-                <path strokeLinecap='round' strokeLinejoin='round' d='M6 18L18 6M6 6l12 12'></path>
+                <path strokeLinecap='round' strokeLinejoin='round' d='M6 18L18 6M6 6l12 12' />
               </svg>
             </button>
           </div>
 
-          <div className='flex-1 p-5 overflow-y-auto flex flex-col gap-5 bg-white'>
+          <div className='flex-1 px-4 py-5 overflow-y-auto flex flex-col gap-4 bg-[#fdfafc] scrollbar-hide'>
+            {/* Suggestion chips */}
+            {showSuggestions && (
+              <div className='flex flex-col gap-2 mt-auto'>
+                <p className='text-[11px] font-semibold text-[#c09ab8] uppercase tracking-widest px-1 mb-0.5'>
+                  무엇이 궁금하세요?
+                </p>
+                {suggestions.map((text, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setInputValue(text)}
+                    style={{ animationDelay: `${0.06 + i * 0.07}s` }}
+                    className='animate-chip-in text-left text-[13px] text-[#7a3b70] bg-white hover:bg-[#fdf0f8] border border-[#eacfe0] hover:border-[#d4a8c8] rounded-xl px-4 py-2.5 leading-snug transition-all shadow-[0_1px_3px_rgba(180,100,160,0.08)] cursor-pointer'
+                  >
+                    <span className='mr-2 opacity-40 text-[11px]'>✦</span>
+                    {text}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start gap-3'}`}
+                className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start items-end gap-2'}`}
               >
-                {msg.type === 'ai' && <ChatIcon className='w-9 h-9 shrink-0' />}
+                {msg.type === 'ai' && <ChatIcon className='w-8 h-8 shrink-0 mb-0.5' />}
 
                 <div
-                  className={`px-5 py-4 min-h-12 text-[15px] leading-relaxed wrap-break-word ${
+                  className={`px-4 py-3.5 min-h-11 text-[14.5px] leading-relaxed wrap-break-word ${
                     msg.type === 'user'
-                      ? 'bg-[#b76aa9] text-white rounded-2xl rounded-br-sm max-w-[80%]'
-                      : 'bg-[#faeaee] text-gray-800 rounded-2xl rounded-tl-sm max-w-[75%]'
+                      ? 'bg-[#c07ab4] text-white rounded-2xl rounded-br-md max-w-[80%] shadow-[0_2px_8px_rgba(180,100,160,0.25)]'
+                      : 'bg-white border border-[#f0dcea] text-gray-700 rounded-2xl rounded-tl-md max-w-[78%] shadow-[0_1px_4px_rgba(0,0,0,0.05)]'
                   }`}
                 >
                   {msg.type === 'ai' ? (
@@ -186,19 +136,19 @@ export default function AIChatWidget({ isOpen, onClose }: Props) {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className='p-4 bg-white border-t border-gray-50'>
+          <div className='px-4 py-3.5 bg-white border-t border-[#f5eaf2]'>
             <form onSubmit={handleSend} className='relative flex items-center'>
               <input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                className='w-full border border-gray-300 rounded-full pl-5 pr-14 py-3 text-[15px] focus:outline-none focus:border-[#b76aa9] transition-colors placeholder:text-gray-400'
-                placeholder='Type your message...'
+                className='w-full border border-[#e0ceda] bg-[#fdf7fb] rounded-full pl-5 pr-12 py-2.5 text-[14px] text-gray-700 focus:outline-none focus:border-[#c07ab4] focus:bg-white transition-all placeholder:text-[#c8a8c0]'
+                placeholder='메시지를 입력하세요...'
               />
               <button
                 type='submit'
-                className='absolute right-2 w-9 h-9 rounded-full bg-[#cb7cb5] hover:bg-[#b76aa9] transition-colors flex items-center justify-center text-white'
+                className='absolute right-1.5 w-8 h-8 rounded-full bg-[#c07ab4] hover:bg-[#a96099] active:scale-95 transition-all flex items-center justify-center text-white shadow-[0_2px_6px_rgba(180,100,160,0.35)] cursor-pointer'
               >
-                <SendIcon className='cursor-pointer' />
+                <SendIcon />
               </button>
             </form>
           </div>

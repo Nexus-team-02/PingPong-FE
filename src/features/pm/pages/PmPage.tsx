@@ -16,6 +16,21 @@ interface NotionStatus {
   databaseSelected: boolean
 }
 
+function getSuggestions(isReady: boolean): string[] {
+  if (isReady) {
+    return [
+      '현재 진행 중인 작업 중 지연된 항목이 있나요?',
+      '이번 주 마감 예정인 태스크를 요약해줘',
+      '완료율이 가장 낮은 작업은 무엇인가요?',
+    ]
+  }
+  return [
+    'Notion 연동은 어떻게 시작하나요?',
+    '데이터베이스를 연결하면 어떤 기능을 쓸 수 있나요?',
+    '프로젝트 관리 페이지 사용법을 알려줘',
+  ]
+}
+
 export default function PmPage() {
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [isChatMounted, setIsChatMounted] = useState(false)
@@ -101,7 +116,11 @@ export default function PmPage() {
             transformOrigin: 'bottom right',
           }}
         >
-          <AIChatWidget isOpen={isChatOpen} onClose={handleCloseChat} />
+          <AIChatWidget
+            isOpen={isChatOpen}
+            onClose={handleCloseChat}
+            suggestions={getSuggestions(isReady)}
+          />
         </div>
       )}
     </div>
