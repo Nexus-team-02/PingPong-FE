@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+
 interface RoleCardProps {
   role: 'BACKEND' | 'FRONTEND' | 'PM/QA'
   icon: string
@@ -42,6 +44,7 @@ const ROLE_CONFIG = {
 
 export default function RoleCard({ role, icon, tags }: RoleCardProps) {
   const cfg = ROLE_CONFIG[role]
+  const navigate = useNavigate()
 
   return (
     <div
@@ -129,19 +132,11 @@ export default function RoleCard({ role, icon, tags }: RoleCardProps) {
           </div>
 
           <button
+            onClick={() => navigate('/mypage')}
             className='cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-bold tracking-wider transition-all duration-150 active:scale-95 hover:opacity-85'
             style={{ background: cfg.accent, color: '#fff', letterSpacing: '0.05em' }}
           >
             START
-            <svg width='12' height='12' viewBox='0 0 12 12' fill='none'>
-              <path
-                d='M2 6H10M7 3L10 6L7 9'
-                stroke='white'
-                strokeWidth='1.5'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
           </button>
         </div>
       </div>
