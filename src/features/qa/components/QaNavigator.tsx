@@ -86,7 +86,7 @@ export default function QaNavigator({
 
   return (
     <>
-      <aside className='flex flex-col w-64 shrink-0 overflow-hidden bg-[#dff0e8] border-r border-[#c5dfd0]'>
+      <aside className='flex flex-col h-full w-64 shrink-0 overflow-hidden bg-[#dff0e8] border-r border-[#c5dfd0]'>
         <div className='px-4 pt-5 pb-3'>
           <div className='flex items-center justify-between mb-2'>
             <h2 className='text-xs font-bold uppercase tracking-widest text-gray-500'>
@@ -107,7 +107,7 @@ export default function QaNavigator({
           </div>
         </div>
 
-        <div className='flex-1 overflow-y-auto px-4 pb-5'>
+        <div className='flex-1 overflow-y-auto px-4 pb-5 scrollbar-hide'>
           {loading && (
             <div className='flex flex-col gap-3'>
               {[1, 2, 3].map((i) => (

@@ -109,8 +109,8 @@ export default function QaPage() {
   const passedBadgeColor = getPassedBadgeColor()
 
   return (
-    <div className='flex min-h-screen overflow-hidden pt-16'>
-      <div className='animate-fade-in'>
+    <div className='flex h-screen overflow-hidden pt-16'>
+      <div className='animate-fade-in h-full'>
         <QaNavigator
           teamId={Number(teamId)}
           selectedEndpointId={selectedEndpoint?.endpointId ?? null}
@@ -118,7 +118,7 @@ export default function QaPage() {
         />
       </div>
 
-      <main className='flex-1 overflow-y-auto px-6 py-5'>
+      <main className='flex-1 overflow-y-auto px-6 py-5 scrollbar-hide'>
         {!selectedEndpoint ? (
           <div className='flex h-full flex-col items-center justify-center text-gray-400'>
             <p className='text-sm'>Select an endpoint from the left panel</p>
