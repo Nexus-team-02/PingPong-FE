@@ -45,8 +45,8 @@ export default function LoginPage() {
         user: result.user,
       })
 
-      toast.success('Logged in successfully.')
-      navigate('/')
+      toast.success('로그인에 성공했습니다.')
+      navigate('/mypage')
     } catch {
       // handleApiError에서 이미 toast.error() 처리됨
     }

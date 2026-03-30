@@ -46,7 +46,7 @@ export default function SignupPage() {
         nickname: form.nickname,
       })
 
-      toast.success('Signed up successfully.')
+      toast.success('회원가입에 성공했습니다.')
       navigate('/login')
     } catch {
       // handleApiError에서 이미 toast.error() 처리됨
