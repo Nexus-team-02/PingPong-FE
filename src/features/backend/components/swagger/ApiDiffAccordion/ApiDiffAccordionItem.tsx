@@ -15,13 +15,22 @@ interface Props {
   path: string
   summary?: string
   endpointId: number
+  disabled?: boolean
 }
 
-export default function ApiDiffAccordionItem({ method, path, summary, endpointId }: Props) {
+export default function ApiDiffAccordionItem({
+  method,
+  path,
+  summary,
+  endpointId,
+  disabled,
+}: Props) {
   const { execute, data, loading } = useApi(getDiffDetailsEndpoint)
   const [open, setOpen] = useState(false)
 
   const handleToggle = async () => {
+    if (disabled) return
+
     const next = !open
     setOpen(next)
 
@@ -34,6 +43,7 @@ export default function ApiDiffAccordionItem({ method, path, summary, endpointId
     <div className={`overflow-hidden rounded-md border ${METHOD_STYLE[method].border}`}>
       <button
         onClick={handleToggle}
+        disabled={disabled}
         className={`flex w-full cursor-pointer items-center gap-3 px-3 py-2 transition-colors hover:brightness-95 ${METHOD_STYLE[method].bg}`}
       >
         <span

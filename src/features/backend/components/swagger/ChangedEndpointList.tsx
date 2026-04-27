@@ -56,6 +56,7 @@ export default function ChangedEndpointList({ endpoints, changeType }: Props) {
             path={endpoint.path}
             summary={endpoint.summary}
             endpointId={endpoint.endpointId}
+            disabled={changeType === 'DELETED'}
           />
         ))}
       </div>
