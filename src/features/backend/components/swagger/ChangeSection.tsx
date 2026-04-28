@@ -16,17 +16,7 @@ type Props = {
 
 export default function ChangeSection({ created, modified, deleted }: Props) {
   return (
-    <div className='mb-8 p-6 rounded-xl bg-white border border-gray-200 shadow-sm'>
-      <div className='flex items-center gap-2.5 pb-5'>
-        <span className='relative flex h-2.5 w-2.5 shrink-0'>
-          <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75' />
-          <span className='relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500' />
-        </span>
-        <div>
-          <p className='text-base font-semibold text-gray-800'>New changes</p>
-        </div>
-      </div>
-
+    <div>
       <div className='flex items-center gap-4 text-sm mb-6'>
         <span className='text-gray-500'>
           <strong className='text-gray-800'>

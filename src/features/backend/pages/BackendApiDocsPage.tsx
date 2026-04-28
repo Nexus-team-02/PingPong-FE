@@ -13,11 +13,14 @@ import Spinner from '@/shared/components/Spinner'
 import FloatingNav, { FloatingNavItem } from '@/shared/components/FloatingNav'
 
 type ViewMode = 'LIST' | 'FLOW'
+type ChangesTab = 'github' | 'swagger'
 
 export default function BackendApiDocsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>('LIST')
   const [syncTick, setSyncTick] = useState(false)
+  const [changesTab, setChangesTab] = useState<ChangesTab>('github')
+  const [githubHasChanges, setGithubHasChanges] = useState(false)
 
   const { teamId } = useParams()
   const navigate = useNavigate()
@@ -39,7 +42,6 @@ export default function BackendApiDocsPage() {
 
   const handleSync = useCallback(async () => {
     if (!teamId) return
-
     try {
       await syncSwagger(Number(teamId))
       refetch?.()
@@ -49,7 +51,6 @@ export default function BackendApiDocsPage() {
     }
   }, [teamId, syncSwagger, refetch])
 
-  const githubRef = useRef<HTMLDivElement>(null)
   const changesRef = useRef<HTMLDivElement>(null)
   const apiRef = useRef<HTMLDivElement>(null)
 
@@ -61,29 +62,9 @@ export default function BackendApiDocsPage() {
     document.getElementById(`tag-${tag}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const totalChanges = created.length + modified.length + deleted.length
+
   const navItems: FloatingNavItem[] = [
-    {
-      id: 'github',
-      label: 'GitHub',
-      icon: (
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          width='20'
-          height='20'
-          viewBox='0 0 24 24'
-          fill='none'
-          stroke='currentColor'
-          strokeWidth='2'
-          strokeLinecap='round'
-          strokeLinejoin='round'
-        >
-          <path d='M15 22v-4a4.8 4.8 0 0 0-1-3.2c3-.3 6-1.5 6-6.5a5.5 5.5 0 0 0-1.5-3.8 5.5 5.5 0 0 0-.1-3.8s-1.2-.4-3.9 1.4a13.3 13.3 0 0 0-7 0C6.2 1.5 5 1.9 5 1.9a5.5 5.5 0 0 0-.1 3.8A5.5 5.5 0 0 0 3 9.5c0 5 3 6.2 6 6.5a4.8 4.8 0 0 0-1 3.2v4' />
-        </svg>
-      ),
-      onClick: () => scrollToSection(githubRef),
-      labelBgClass: 'bg-gray-800',
-      iconTextClass: 'text-gray-700',
-    },
     {
       id: 'changes',
       label: 'Changes',
@@ -98,6 +79,7 @@ export default function BackendApiDocsPage() {
           strokeWidth='2'
           strokeLinecap='round'
           strokeLinejoin='round'
+          style={{ transform: 'rotate(90deg)' }}
         >
           <path d='m21 16-4 4-4-4' />
           <path d='M17 20V4' />
@@ -106,9 +88,8 @@ export default function BackendApiDocsPage() {
         </svg>
       ),
       onClick: () => scrollToSection(changesRef),
-      isVisible: hasChanges,
-      labelBgClass: 'bg-blue-600',
-      iconTextClass: 'text-blue-600',
+      labelBgClass: 'bg-gray-800',
+      iconTextClass: 'text-blue-500',
     },
     {
       id: 'api-docs',
@@ -147,17 +128,85 @@ export default function BackendApiDocsPage() {
       <FloatingNav items={navItems} />
 
       <div className='w-full rounded-xl bg-white mx-auto p-8 mt-35 animate-fade-up'>
-        <div ref={githubRef} className='scroll-mt-32'>
-          <GitHubSection refreshTrigger={syncTick} />
+        <div ref={changesRef} className='scroll-mt-32 mb-10'>
+          <div className='border border-gray-200 rounded-xl shadow-sm overflow-hidden'>
+            <div className='flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50'>
+              <div className='flex items-center gap-2.5'>
+                <span className='relative flex h-2.5 w-2.5 shrink-0'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75' />
+                  <span className='relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500' />
+                </span>
+                <p className='text-sm font-semibold text-gray-800'>Changes</p>
+                {hasChanges && (
+                  <span className='text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5'>
+                    {totalChanges} endpoints
+                  </span>
+                )}
+              </div>
+
+              <div className='flex items-center gap-1 bg-gray-100 rounded-lg p-1'>
+                <button
+                  onClick={() => setChangesTab('github')}
+                  className={`cursor-pointer flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+                    changesTab === 'github'
+                      ? 'bg-white text-gray-800 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <svg className='w-3.5 h-3.5' viewBox='0 0 24 24' fill='currentColor'>
+                    <path d='M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z' />
+                  </svg>
+                  GitHub
+                  {githubHasChanges && <span className='w-1.5 h-1.5 rounded-full bg-blue-500' />}
+                </button>
+                <button
+                  onClick={() => setChangesTab('swagger')}
+                  className={`cursor-pointer flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+                    changesTab === 'swagger'
+                      ? 'bg-white text-gray-800 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='14'
+                    height='14'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke={changesTab === 'swagger' ? '#16a34a' : 'currentColor'}
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  >
+                    <path d='m21 16-4 4-4-4' />
+                    <path d='M17 20V4' />
+                    <path d='m3 8 4-4 4 4' />
+                    <path d='M7 4v16' />
+                  </svg>
+                  Swagger
+                  {hasChanges && <span className='w-1.5 h-1.5 rounded-full bg-blue-500' />}
+                </button>
+              </div>
+            </div>
+
+            <div className='p-6'>
+              {changesTab === 'github' && (
+                <GitHubSection refreshTrigger={syncTick} onChangeDetected={setGithubHasChanges} />
+              )}
+              {changesTab === 'swagger' &&
+                (hasChanges ? (
+                  <ChangeSection created={created} modified={modified} deleted={deleted} />
+                ) : (
+                  <div className='flex items-center gap-2 text-green-500 text-sm py-2'>
+                    <span className='text-base'>✓</span>
+                    변경된 엔드포인트가 없습니다
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
 
-        {hasChanges && (
-          <div ref={changesRef} className='scroll-mt-32 mt-10 animate-card-in anim-delay-[0.1s]'>
-            <ChangeSection created={created} modified={modified} deleted={deleted} />
-          </div>
-        )}
-
-        <div ref={apiRef} className='scroll-mt-32 mt-10'>
+        <div ref={apiRef} className='scroll-mt-32'>
           <BackendToolbar
             viewMode={viewMode}
             isSyncing={isSyncing}
